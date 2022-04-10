@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require_relative '../lib/chess/board/board'
-require_relative '../lib/chess/pieces/piece'
 require_relative '../lib/chess/pieces/pawn'
+require_relative '../lib/chess/pieces/bishop'
 require_relative '../lib/chess/errors/invalid_coordinate'
 require_relative '../lib/chess/errors/illegal_move'
 
@@ -153,6 +153,7 @@ RSpec.describe Board do
     let(:black_pawn) { Pawn.new('black') }
     let(:black_pawn_two) { Pawn.new('white') }
     let(:white_pawn) { Pawn.new('white') }
+    let(:white_bishop) { Bishop.new('white') }
 
     context 'when moving a pawn from a2 to a4, in a clean board' do
       it 'does not raise IllegalMoveError' do
@@ -176,7 +177,7 @@ RSpec.describe Board do
       end
     end
 
-    context 'when moving a pawn from a2 to a4, with a black pawn on a4' do
+    context 'when moving a pawn from a2 to a4, with a pawn of the same color on a4' do
       it 'raises IllegalMoveError' do
         board.add_piece(black_pawn, 'a2')
         board.add_piece(black_pawn_two, 'a4')
@@ -189,6 +190,31 @@ RSpec.describe Board do
         board.add_piece(white_pawn, 'a2')
         board.add_piece(black_pawn, 'b3')
         expect { board.validate_move('a2', 'b3') }.not_to raise_error
+      end
+    end
+
+    context 'when capturing a pawn black pawn on b5 with a white bishop placed on f1, on a clean board' do
+      it 'does not raises error' do
+        board.add_piece(black_pawn, 'b5')
+        board.add_piece(white_bishop, 'f1')
+        expect { board.validate_move('f1', 'b5') }.not_to raise_error
+      end
+    end
+
+    context 'when capturing a pawn black pawn on b5 with a white bishop placed on f1, with a white pawn blocking on c4' do
+      it 'raises IllegalMoveError' do
+        board.add_piece(black_pawn, 'b5')
+        board.add_piece(white_pawn, 'c4')
+        board.add_piece(white_bishop, 'f1')
+        expect { board.validate_move('f1', 'b5') }.to raise_error(IllegalMoveError)
+      end
+    end
+
+    context 'when moving a white bishop on f1 to b5, with a white pawn blocking on b5' do
+      it 'raises IllegalMoveError' do
+        board.add_piece(white_pawn, 'b5')
+        board.add_piece(white_bishop, 'f1')
+        expect { board.validate_move('f1', 'b5') }.to raise_error(IllegalMoveError)
       end
     end
   end

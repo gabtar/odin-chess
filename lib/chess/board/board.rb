@@ -5,10 +5,7 @@ require_relative '../errors/illegal_move'
 
 # Class for chess board
 #
-# @author Full Name
-# @attr [Types] attribute_name a full description of the attribute
-# @attr_reader [Types] name description of a readonly attribute
-# @attr_writer [Types] name description of writeonly attribute
+# @attr squares [Array] Squares of the chess board
 class Board
   attr_reader :squares
 
@@ -16,21 +13,39 @@ class Board
     @squares = Array.new(8) { Array.new(8, nil) }
   end
 
+  # Adds a piece to the board 
+  # @param piece [Piece] the piece that will be added
+  # @param coordinate [String] the destination square in the chess board
   def add_piece(piece, coordinate)
     rank, file = parse_coordinate(coordinate)
     squares[rank][file] = piece
   end
 
   # Check if its a valid move according to chess rules
+  # @param from [String] the starting square coordinate
+  # @param to [String] the destination square coordinate
+  # @raise [IllegalMoveError] when it's not a valid move
   def validate_move(from, to)
     from_rank, from_file = parse_coordinate(from)
+    to_rank, to_file = parse_coordinate(to)
 
     piece = squares[from_rank][from_file]
+    attacked_piece = squares[to_rank][to_file]
 
-    raise IllegalMoveError if !piece.can_move?(self, from, to) || blocked_path?(from, to)
+    if attacked_piece.nil?
+      raise IllegalMoveError if !piece.can_move?(self, from, to) || blocked_path?(from, to)
+    elsif attacked_piece.color != piece.color
+      raise IllegalMoveError if !piece.can_capture?(self, from, to) || blocked_path?(from, to)
+    else
+      # Blocking piece of the same color
+      raise IllegalMoveError
+    end
   end
 
   # Checks if the path if blocked by another piece in the board. Does not check the destination square.
+  # @param from [String] the starting square coordinate
+  # @param to [String] the destination square coordinate
+  # @return [Boolean] if the path is blocked
   def blocked_path?(from, to)
     current_rank, current_file = parse_coordinate(from)
     to_rank, to_file = parse_coordinate(to)
@@ -38,7 +53,7 @@ class Board
     direction = calculate_direction_vector(from, to)
     blocked_path = false
 
-    until current_rank == to_rank && current_file == to_file || blocked_path
+    until current_rank == to_rank - direction[0] && current_file == to_file - direction[1] || blocked_path
       current_rank += direction[0]
       current_file += direction[1]
 
@@ -47,8 +62,9 @@ class Board
     blocked_path
   end
 
-  # Calculates the distance vector between from and to arguments in the board
-  # returns vector [rank, file]
+  # Calculates the distance vector between +from+ and +to+ arguments in the board
+  # @param from [String] the starting square coordinate
+  # @param to [String] the destination square coordinate
   def calculate_distance_vector(from, to)
     from_rank, from_file = parse_coordinate(from)
     to_rank, to_file = parse_coordinate(to)
@@ -56,8 +72,10 @@ class Board
     [to_rank - from_rank, to_file - from_file]
   end
 
-  # Returns the unit direction vector
-  # In the form [rank, file]
+  # Returns the unit vector for the path given
+  # @param from [String] the starting square coordinate
+  # @param to [String] the destination square coordinate
+  # @raise [IllegalMoveError] when it's not a valid path for a chess piece
   def calculate_direction_vector(from, to)
     distance_vector = calculate_distance_vector(from, to)
 
@@ -73,9 +91,11 @@ class Board
   # end
 
   # Returns the position in the +squares+ array for the given coordinate
-  #
-  # @param coordinate [String] the board coordinate eg. 'a1' @return [Array] array containing [row, column] for the internal
-  # representation of the chess board or InvalidCoordinateError if not exists
+  # @param coordinate [String] the board coordinate eg. 'a1'
+  # @return [Array] a coordinates array containing [row, column] values
+  #   representation of the chess board or InvalidCoordinateError if not exists
+  # @raise [InvalidCoordinateError] when it's not a valid coordinate of a chess
+  #   board 
   def parse_coordinate(coordinate)
     if coordinate.length == 2
       file = coordinate[0].ord - 97
