@@ -3,21 +3,20 @@
 require_relative './piece'
 require_relative './mixins/basic_directional_move'
 
-# Represents a Bishop in a chess game
+# Represents a Rook in a chess game
 #
 # @attr [String] color piece color(eg. black or white)
-class Bishop < Piece
+class Rook < Piece
   include BasicDirectionalMove
 
   def initialize(color)
     super(color)
-    # default move = diagonals
-    # directions!
-    @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
+    # default move = horizontal + vertical
+    @possible_directions = [[1, 0], [-1, 0], [0, 1] [0, -1]]
   end
 
-  # Bishop representation
+  # Rook representation
   def to_s
-    color == 'white' ? '♗' : '♝'
+    color == 'white' ? '♖' : '♜'
   end
 end

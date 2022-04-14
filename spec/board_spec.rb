@@ -214,6 +214,7 @@ RSpec.describe Board do
       it 'raises IllegalMoveError' do
         board.add_piece(white_pawn, 'b5')
         board.add_piece(white_bishop, 'f1')
+        p board.blocked_path?('f1', 'b5')
         expect { board.validate_move('f1', 'b5') }.to raise_error(IllegalMoveError)
       end
     end

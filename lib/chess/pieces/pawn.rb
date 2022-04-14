@@ -5,7 +5,6 @@ require_relative './piece'
 # Represents a Pawn in a chess game
 #
 # @attr [String] color piece color(eg. black or white)
-# @attr [Boolean] jump indicates if the pice can jump other pieces in the board
 class Pawn < Piece
   def initialize(color)
     super(color)
@@ -17,31 +16,28 @@ class Pawn < Piece
   end
 
   # Indicates if the a Pawn can move +from+ specified square +to+ destination
-  # square
+  # in the current +board+ context
   # @param board [Board] a chess board object
   # @param from [String] the starting square coordinate
   # @param to [String] the destination square coordinate
-  def can_move?(board, from, to)
-    from_rank, from_file = board.parse_coordinate(from)
-    distance = board.calculate_distance_vector(from, to)
+  def can_move_to?(board, from, to)
+    target_piece = board.get_piece_at(to)
+    from_rank, = board.parse_coordinate(from)
 
-    # False if not from second rank
-    return false if distance == [2, 0] && from_rank != 1
-
-    return true if @posible_moves.include?(distance)
-
+    # Check if there is a piece of oposite color
+    if target_piece && target_piece.color != color
+      # Check capture
+      return true if @posibles_captures.include?(board.calculate_distance_vector(from, to))
+    else
+      # Check displacement
+      distance = board.calculate_distance_vector(from, to)
+      return false if distance == [2, 0] && from_rank != 1
+      return true if @posible_moves.include?(distance) && !board.blocked_path?(from, to)
+    end
     false
   end
 
-  def can_capture?(board, from, to)
-    distance = board.calculate_distance_vector(from, to)
-
-    return true if @posibles_captures.include?(distance)
-
-    false
-  end
-
-  # Piece representation
+  # Pawn representation
   def to_s
     color == 'white' ? '♙' : '♟'
   end

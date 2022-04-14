@@ -13,7 +13,7 @@ class Board
     @squares = Array.new(8) { Array.new(8, nil) }
   end
 
-  # Adds a piece to the board 
+  # Adds a piece to the board
   # @param piece [Piece] the piece that will be added
   # @param coordinate [String] the destination square in the chess board
   def add_piece(piece, coordinate)
@@ -26,23 +26,11 @@ class Board
   # @param to [String] the destination square coordinate
   # @raise [IllegalMoveError] when it's not a valid move
   def validate_move(from, to)
-    from_rank, from_file = parse_coordinate(from)
-    to_rank, to_file = parse_coordinate(to)
-
-    piece = squares[from_rank][from_file]
-    attacked_piece = squares[to_rank][to_file]
-
-    if attacked_piece.nil?
-      raise IllegalMoveError if !piece.can_move?(self, from, to) || blocked_path?(from, to)
-    elsif attacked_piece.color != piece.color
-      raise IllegalMoveError if !piece.can_capture?(self, from, to) || blocked_path?(from, to)
-    else
-      # Blocking piece of the same color
-      raise IllegalMoveError
-    end
+    raise IllegalMoveError unless get_piece_at(from).can_move_to?(self, from, to)
   end
 
-  # Checks if the path if blocked by another piece in the board. Does not check the destination square.
+  # Checks if the path if blocked by another piece in the board. Does not
+  # check the destination square.
   # @param from [String] the starting square coordinate
   # @param to [String] the destination square coordinate
   # @return [Boolean] if the path is blocked
@@ -59,6 +47,7 @@ class Board
 
       blocked_path = true unless squares[current_rank][current_file].nil?
     end
+    blocked_path = true if !get_piece_at(to).nil? && !get_piece_at(from).nil? && get_piece_at(from).color == get_piece_at(to).color
     blocked_path
   end
 
@@ -80,8 +69,9 @@ class Board
     distance_vector = calculate_distance_vector(from, to)
 
     # Check if not a diagonal or square direction from starting point (eg. from a1 to e2)
-    # TODO, unless if its a horse!!!
-    raise IllegalMoveError.new('Invalid direction') if !distance_vector.include?(0) && distance_vector[0].abs != distance_vector[1].abs
+    if !distance_vector.include?(0) && distance_vector[0].abs != distance_vector[1].abs
+      raise IllegalMoveError, 'Invalid movement direction'
+    end
 
     distance_vector.map { |item| item.zero? ? 0 : item / item.abs }
   end
@@ -95,7 +85,7 @@ class Board
   # @return [Array] a coordinates array containing [row, column] values
   #   representation of the chess board or InvalidCoordinateError if not exists
   # @raise [InvalidCoordinateError] when it's not a valid coordinate of a chess
-  #   board 
+  #   board
   def parse_coordinate(coordinate)
     if coordinate.length == 2
       file = coordinate[0].ord - 97
@@ -103,5 +93,15 @@ class Board
       return [rank, file] if rank.between?(0, squares.length) && file.between?(0, squares[0].length)
     end
     raise InvalidCoordinateError
+  end
+
+  # Returns the piece at the specified +coordinate+
+  # @param coordinate [String]
+  # @return [Piece, nil] the piece on the square or nil
+  # @raise [InvalidCoordinateError] when it's not a valid coordinate of a chess
+  #   board
+  def get_piece_at(coordinate)
+    rank, file = parse_coordinate(coordinate)
+    squares[rank][file]
   end
 end
