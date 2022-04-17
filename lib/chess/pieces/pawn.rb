@@ -25,6 +25,7 @@ class Pawn < Piece
     from_rank, = board.parse_coordinate(from)
 
     # Check if there is a piece of oposite color
+    # TODO, check en passant
     if target_piece && target_piece.color != color
       # Check capture
       return true if @posibles_captures.include?(board.calculate_distance_vector(from, to))
@@ -35,6 +36,15 @@ class Pawn < Piece
       return true if @posible_moves.include?(distance) && !board.blocked_path?(from, to)
     end
     false
+  end
+
+  # Checks if the pawn defends the +to+ square at +from+ position in the
+  # current board status
+  # @param board [Board] a chess board object
+  # @param from [String] the starting square coordinate
+  # @param to [String] the destination square coordinate
+  def defends_square?(board, from, to)
+    @posibles_captures.include?(board.calculate_distance_vector(from, to))
   end
 
   # Pawn representation

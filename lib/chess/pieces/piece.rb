@@ -3,21 +3,18 @@
 # Basic class for chess piecess
 #
 # @attr [String] color piece color (eg. black or white)
-# @attr [Boolean] jump indicates if the pice can jump other pieces in the board
 class Piece
   attr_reader :color
 
-  def initialize(color, jump = false)
+  def initialize(color)
     @color = color
-    @jump = jump
   end
 
-  # Indicates if the piece can move +from+ specified square +to+ destination
-  # square
-  # @param board [Board] a chess board object
-  # @param from [String] the starting square coordinate
-  # @param to [String] the destination square coordinate
-  def can_move?(board, from, to)
-    false
+  # Indicates if the +other_piece+ is a same color piece or not.
+  # @param other_piece [Piece] the piece we want to know if it's of the opponent's army
+  def same_color?(other_piece)
+    return false if other_piece.nil?
+
+    color == other_piece.color
   end
 end

@@ -57,4 +57,42 @@ RSpec.describe Queen do
       end
     end
   end
+
+  describe '#defends_square?' do
+    subject(:black_queen) { described_class.new('black') }
+    let(:board) { Board.new }
+    let(:white_pawn) { Pawn.new('white') }
+
+    context 'when on a clean board from c2 defends a4' do
+      it 'returns true' do
+        board.add_piece(black_queen, 'c2')
+        expect(black_queen.defends_square?(board, 'c2', 'a4')).to be_truthy
+      end
+    end
+
+    context 'when from d2 cant defend h2 because of a pawn blocking on f2' do
+      it 'returns false' do
+        board.add_piece(black_queen, 'd2')
+        board.add_piece(white_pawn, 'f2')
+        expect(black_queen.defends_square?(board, 'd2', 'h2')).to be_falsy
+      end
+    end
+  end
+
+  describe '#to_s' do
+    let(:white_queen) { described_class.new('white') }
+    let(:black_queen) { described_class.new('black') }
+
+    context 'when its a white queen' do
+      it 'returns the white queen symbol (♕)' do
+        expect(white_queen.to_s).to eql("♕")
+      end
+    end
+
+    context 'when its a black queen' do
+      it 'returns the white queen symbol (♛)' do
+        expect(black_queen.to_s).to eql("♛")
+      end
+    end
+  end
 end

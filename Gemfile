@@ -5,3 +5,5 @@ source "https://rubygems.org"
 # gem "rails"
 
 gem "rspec", "~> 3.11"
+
+gem 'simplecov', require: false, group: :test

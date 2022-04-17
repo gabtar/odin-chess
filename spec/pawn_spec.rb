@@ -47,4 +47,47 @@ RSpec.describe Pawn do
       end
     end
   end
+
+  describe '#defends_square??' do
+    let(:board) { Board.new }
+    let(:white_pawn) { Pawn.new('white') }
+
+    context 'when a pawn on a2 defends a square on b3' do
+      it 'returns ture' do
+        board.add_piece(white_pawn, 'a2')
+        expect(white_pawn.defends_square?(board, 'a2', 'b3')).to be_truthy
+      end
+    end
+
+    context 'when a pawn on h2 defends a square on g3' do
+      it 'returns ture' do
+        board.add_piece(white_pawn, 'h2')
+        expect(white_pawn.defends_square?(board, 'h2', 'g3')).to be_truthy
+      end
+    end
+
+    context 'when a pawn on h2 not defends a square on a1' do
+      it 'returns false' do
+        board.add_piece(white_pawn, 'h2')
+        expect(white_pawn.defends_square?(board, 'h2', 'a1')).to be_falsy
+      end
+    end
+  end
+
+  describe '#to_s' do
+    let(:white_pawn) { Pawn.new('white') }
+    let(:black_pawn) { Pawn.new('black') }
+
+    context 'when its a white pawn' do
+      it 'returns the white pawn symbol (♙)' do
+        expect(white_pawn.to_s).to eql("♙")
+      end
+    end
+
+    context 'when its a black pawn' do
+      it 'returns the white pawn symbol (♟)' do
+        expect(black_pawn.to_s).to eql("♟")
+      end
+    end
+  end
 end

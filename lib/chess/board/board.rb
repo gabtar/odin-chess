@@ -2,6 +2,7 @@
 
 require_relative '../errors/invalid_coordinate'
 require_relative '../errors/illegal_move'
+# require 'pry-byebug'
 
 # Class for chess board
 #
@@ -26,7 +27,26 @@ class Board
   # @param to [String] the destination square coordinate
   # @raise [IllegalMoveError] when it's not a valid move
   def validate_move(from, to)
-    raise IllegalMoveError unless get_piece_at(from).can_move_to?(self, from, to)
+    # TODO, on destination square if there is a opponent Piece
+    # same color piece or empty square
+
+    # Types/checks:
+    # move -> Rules for each piece!!!
+    # capture
+    # castle
+    # en passant
+    # queening
+
+    from_piece = get_piece_at(from)
+    to_piece = get_piece_at(to)
+
+    if to_piece.nil? || from_piece.color != to_piece.color
+      # can displace to or capture
+      raise IllegalMoveError unless get_piece_at(from).can_move_to?(self, from, to)
+    else
+      # cannot displace to
+      raise IllegalMoveError, "Illegal move #{from} cant go to #{to}"
+    end
   end
 
   # Checks if the path if blocked by another piece in the board. Does not
@@ -47,7 +67,8 @@ class Board
 
       blocked_path = true unless squares[current_rank][current_file].nil?
     end
-    blocked_path = true if !get_piece_at(to).nil? && !get_piece_at(from).nil? && get_piece_at(from).color == get_piece_at(to).color
+    # # TODO, need to check attacked squares
+    # blocked_path = true if !get_piece_at(to).nil? && !get_piece_at(from).nil? && get_piece_at(from).color == get_piece_at(to).color
     blocked_path
   end
 
@@ -74,6 +95,33 @@ class Board
     end
 
     distance_vector.map { |item| item.zero? ? 0 : item / item.abs }
+  end
+
+  # Checks if the +square+ coordinate passed is defended by the passed +army+ on the board
+  # @param square [String] the coordinate of the square we want to know if its defended
+  # @param army [String] the color of the army we want to know if they are defending the square
+  # TODO New square Abstraction
+  def defended?(square, army)
+    # rank = 0
+    # file = 0
+    # squares.any? do |row|
+    #   row.any? do |piece|
+    #     coordinate = (97 + rank).chr + (file + 1).to_s
+    #     p coordinate
+    #     !piece.nil? && piece.color == army && piece.defends_square?(self, coordinate, square)
+    #     file += 1
+    #   end
+    #   rank += 1
+    # end
+    defended = false
+    squares.each_with_index do |rank, rank_index|
+      rank.each_with_index do |file, file_index|
+        coordinate = (97 + file_index).chr + (rank_index + 1).to_s
+
+        defended = true if !file.nil? && file.color == army && file.defends_square?(self, coordinate, square)
+      end
+    end
+    defended
   end
 
   # # TODO, Converts current board position to FEN notation string

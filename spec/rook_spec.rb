@@ -49,4 +49,42 @@ RSpec.describe Rook do
       end
     end
   end
+
+  describe '#defends_square?' do
+    subject(:black_rook) { Rook.new('black') }
+    let(:board) { Board.new }
+    let(:black_pawn) { Pawn.new('black') }
+
+    context 'when on e6 on a clean board defends e1' do
+      it 'returns true' do
+        board.add_piece(black_rook, 'e6')
+        expect(black_rook.defends_square?(board, 'e6', 'e1')).to be_truthy
+      end
+    end
+
+    context 'when on f6 cant defend a6 beacuse of a pawn blocking on b6' do
+      it 'returns false' do
+        board.add_piece(black_rook, 'f6')
+        board.add_piece(black_pawn, 'b6')
+        expect(black_rook.defends_square?(board, 'f6', 'a6')).to be_falsy
+      end
+    end
+  end
+
+  describe '#to_s' do
+    let(:white_rook) { described_class.new('white') }
+    let(:black_rook) { described_class.new('black') }
+
+    context 'when its a white rook' do
+      it 'returns the white rook symbol (♖)' do
+        expect(white_rook.to_s).to eql("♖")
+      end
+    end
+
+    context 'when its a black rook' do
+      it 'returns the white rook symbol (♜)' do
+        expect(black_rook.to_s).to eql("♜")
+      end
+    end
+  end
 end

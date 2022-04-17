@@ -42,4 +42,42 @@ RSpec.describe Bishop do
       end
     end
   end
+
+  describe '#defends_square?' do
+    subject(:black_bishop) { described_class.new('black') }
+    let(:board) { Board.new }
+    let(:white_pawn) { Pawn.new('white') }
+
+    context 'when defends c6 square from f3 in a clean board' do
+      it 'returns true' do
+        board.add_piece(black_bishop, 'c6')
+        expect(black_bishop.defends_square?(board, 'f3', 'c6')).to be_truthy
+      end
+    end
+
+    context 'when not defends a1 square from h8 by a pawn blocking on d4' do
+      it 'returns false' do
+        board.add_piece(black_bishop, 'h8')
+        board.add_piece(white_pawn, 'd4')
+        expect(black_bishop.defends_square?(board, 'h8', 'a1')).to be_falsy
+      end
+    end
+  end
+
+  describe '#to_s' do
+    let(:white_bishop) { described_class.new('white') }
+    let(:black_bishop) { described_class.new('black') }
+
+    context 'when its a white bishop' do
+      it 'returns the white bishop symbol (♗)' do
+        expect(white_bishop.to_s).to eql("♗")
+      end
+    end
+
+    context 'when its a black bishop' do
+      it 'returns the white bishop symbol (♝)' do
+        expect(black_bishop.to_s).to eql("♝")
+      end
+    end
+  end
 end

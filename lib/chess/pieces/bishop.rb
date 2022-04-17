@@ -16,6 +16,18 @@ class Bishop < Piece
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
   end
 
+  # Checks if the bishop defends the +to+ square at +from+ position in the
+  # current board status
+  # @param board [Board] a chess board object
+  # @param from [String] the starting square coordinate
+  # @param to [String] the destination square coordinate
+  def defends_square?(board, from, to)
+    move_direction = board.calculate_direction_vector(from, to)
+    blocked = board.blocked_path?(from, to)
+
+    @possible_directions.include?(move_direction) && !blocked
+  end
+
   # Bishop representation
   def to_s
     color == 'white' ? '♗' : '♝'

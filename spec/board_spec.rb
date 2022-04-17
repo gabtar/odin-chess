@@ -214,8 +214,27 @@ RSpec.describe Board do
       it 'raises IllegalMoveError' do
         board.add_piece(white_pawn, 'b5')
         board.add_piece(white_bishop, 'f1')
-        p board.blocked_path?('f1', 'b5')
         expect { board.validate_move('f1', 'b5') }.to raise_error(IllegalMoveError)
+      end
+    end
+  end
+
+  describe '#defended?' do
+    subject(:board) { described_class.new }
+    let(:white_pawn) { Pawn.new('white') }
+    let(:black_pawn) { Pawn.new('black') }
+
+    context 'when d4 square is defended by a pawn on e3' do
+      it 'returns true' do
+        board.add_piece(white_pawn, 'e3')
+        expect(board.defended?('d4', 'white')).to be_truthy
+      end
+    end
+
+    context 'when d4 square is not defended by white' do
+      it 'returns false' do
+        board.add_piece(black_pawn, 'e3')
+        expect(board.defended?('d4', 'white')).to be_falsy
       end
     end
   end
