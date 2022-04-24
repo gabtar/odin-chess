@@ -73,21 +73,4 @@ RSpec.describe Pawn do
       end
     end
   end
-
-  describe '#to_s' do
-    let(:white_pawn) { Pawn.new('white') }
-    let(:black_pawn) { Pawn.new('black') }
-
-    context 'when its a white pawn' do
-      it 'returns the white pawn symbol (♙)' do
-        expect(white_pawn.to_s).to eql("♙")
-      end
-    end
-
-    context 'when its a black pawn' do
-      it 'returns the white pawn symbol (♟)' do
-        expect(black_pawn.to_s).to eql("♟")
-      end
-    end
-  end
 end

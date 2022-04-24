@@ -22,54 +22,22 @@ class Board
     squares[rank][file] = piece
   end
 
-  # Check if its a valid move according to chess rules
-  # @param from [String] the starting square coordinate
-  # @param to [String] the destination square coordinate
-  # @raise [IllegalMoveError] when it's not a valid move
-  def validate_move(from, to)
-    # TODO, on destination square if there is a opponent Piece
-    # same color piece or empty square
-
-    # Types/checks:
-    # move -> Rules for each piece!!!
-    # capture
-    # castle
-    # en passant
-    # queening
-
-    from_piece = get_piece_at(from)
-    to_piece = get_piece_at(to)
-
-    if to_piece.nil? || from_piece.color != to_piece.color
-      # can displace to or capture
-      raise IllegalMoveError unless get_piece_at(from).can_move_to?(self, from, to)
-    else
-      # cannot displace to
-      raise IllegalMoveError, "Illegal move #{from} cant go to #{to}"
-    end
-  end
-
   # Checks if the path if blocked by another piece in the board. Does not
   # check the destination square.
   # @param from [String] the starting square coordinate
   # @param to [String] the destination square coordinate
   # @return [Boolean] if the path is blocked
   def blocked_path?(from, to)
-    current_rank, current_file = parse_coordinate(from)
-    to_rank, to_file = parse_coordinate(to)
-
     direction = calculate_direction_vector(from, to)
-    blocked_path = false
+    current_square = next_square(from, direction)
 
-    until current_rank == to_rank - direction[0] && current_file == to_file - direction[1] || blocked_path
-      current_rank += direction[0]
-      current_file += direction[1]
+    until current_square == to
+      rank, file = parse_coordinate(current_square)
+      return true unless squares[rank][file].nil?
 
-      blocked_path = true unless squares[current_rank][current_file].nil?
+      current_square = next_square(current_square, direction)
     end
-    # # TODO, need to check attacked squares
-    # blocked_path = true if !get_piece_at(to).nil? && !get_piece_at(from).nil? && get_piece_at(from).color == get_piece_at(to).color
-    blocked_path
+    false
   end
 
   # Calculates the distance vector between +from+ and +to+ arguments in the board
@@ -100,7 +68,6 @@ class Board
   # Checks if the +square+ coordinate passed is defended by the passed +army+ on the board
   # @param square [String] the coordinate of the square we want to know if its defended
   # @param army [String] the color of the army we want to know if they are defending the square
-  # TODO New square Abstraction
   def defended?(square, army)
     # rank = 0
     # file = 0
@@ -151,5 +118,18 @@ class Board
   def get_piece_at(coordinate)
     rank, file = parse_coordinate(coordinate)
     squares[rank][file]
+  end
+
+  private
+
+  # Internal method for #blocked_path? returns the next square in the specified
+  # +direction+
+  def next_square(current_square, direction)
+    rank, file = parse_coordinate(current_square)
+
+    next_rank = rank + direction[0]
+    next_file = file + direction[1]
+
+    "#{(next_file + 97).chr}#{next_rank + 1}"
   end
 end

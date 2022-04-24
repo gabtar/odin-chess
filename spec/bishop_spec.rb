@@ -63,21 +63,4 @@ RSpec.describe Bishop do
       end
     end
   end
-
-  describe '#to_s' do
-    let(:white_bishop) { described_class.new('white') }
-    let(:black_bishop) { described_class.new('black') }
-
-    context 'when its a white bishop' do
-      it 'returns the white bishop symbol (♗)' do
-        expect(white_bishop.to_s).to eql("♗")
-      end
-    end
-
-    context 'when its a black bishop' do
-      it 'returns the white bishop symbol (♝)' do
-        expect(black_bishop.to_s).to eql("♝")
-      end
-    end
-  end
 end

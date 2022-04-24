@@ -9,22 +9,22 @@ require_relative '../lib/chess/errors/illegal_move'
 RSpec.describe Board do
   describe '#add_piece' do
     subject(:board) { described_class.new }
-    let(:black_piece) { Piece.new('black') }
+    let(:black_pawn) { Pawn.new('black') }
 
     context 'when adding a piece to a1 square' do
       it 'adds the piece to the board in the a1 square' do
         # c4 - rank 4, file c
-        board.add_piece(black_piece, 'c4')
+        board.add_piece(black_pawn, 'c4')
         # file c -> column 2, rank 4 -> row 3 (array index starts from 0)
         # Internally on the squares array of 8x8
         # squares[rank][file]
-        expect(board.squares[3][2]).to eq(black_piece)
+        expect(board.squares[3][2]).to eq(black_pawn)
       end
     end
 
     context 'when adding a piece to a non existent square' do
       it 'dont add the piece to the board and raises an InvalidCoordinateError' do
-        expect { board.add_piece(black_piece, 'z5') }.to raise_error(InvalidCoordinateError)
+        expect { board.add_piece(black_pawn, 'z5') }.to raise_error(InvalidCoordinateError)
         expect(board.squares[0][0]).to eq(nil)
       end
     end
@@ -144,77 +144,6 @@ RSpec.describe Board do
       it 'returns true' do
         board.add_piece(black_pawn, 'f5')
         expect(board.blocked_path?('d3', 'g6')).to eql(true)
-      end
-    end
-  end
-
-  describe '#validate_move' do
-    subject(:board) { described_class.new }
-    let(:black_pawn) { Pawn.new('black') }
-    let(:black_pawn_two) { Pawn.new('white') }
-    let(:white_pawn) { Pawn.new('white') }
-    let(:white_bishop) { Bishop.new('white') }
-
-    context 'when moving a pawn from a2 to a4, in a clean board' do
-      it 'does not raise IllegalMoveError' do
-        board.add_piece(black_pawn, 'a2')
-        expect { board.validate_move('a2', 'a4') }.not_to raise_error
-      end
-    end
-
-    context 'when moving a pawn from a2 to c5, in a clean board' do
-      it 'raises IllegalMoveError' do
-        board.add_piece(black_pawn, 'a2')
-        expect { board.validate_move('a2', 'c5') }.to raise_error(IllegalMoveError)
-      end
-    end
-
-    context 'when moving a pawn from a2 to a4, with a black pawn on a3' do
-      it 'raises IllegalMoveError' do
-        board.add_piece(black_pawn, 'a2')
-        board.add_piece(black_pawn_two, 'a3')
-        expect { board.validate_move('a2', 'a4') }.to raise_error(IllegalMoveError)
-      end
-    end
-
-    context 'when moving a pawn from a2 to a4, with a pawn of the same color on a4' do
-      it 'raises IllegalMoveError' do
-        board.add_piece(black_pawn, 'a2')
-        board.add_piece(black_pawn_two, 'a4')
-        expect { board.validate_move('a2', 'a4') }.to raise_error(IllegalMoveError)
-      end
-    end
-
-    context 'when capturing a pawn black pawn on b3 with a white pawn placed on a2' do
-      it 'does not raises error' do
-        board.add_piece(white_pawn, 'a2')
-        board.add_piece(black_pawn, 'b3')
-        expect { board.validate_move('a2', 'b3') }.not_to raise_error
-      end
-    end
-
-    context 'when capturing a pawn black pawn on b5 with a white bishop placed on f1, on a clean board' do
-      it 'does not raises error' do
-        board.add_piece(black_pawn, 'b5')
-        board.add_piece(white_bishop, 'f1')
-        expect { board.validate_move('f1', 'b5') }.not_to raise_error
-      end
-    end
-
-    context 'when capturing a pawn black pawn on b5 with a white bishop placed on f1, with a white pawn blocking on c4' do
-      it 'raises IllegalMoveError' do
-        board.add_piece(black_pawn, 'b5')
-        board.add_piece(white_pawn, 'c4')
-        board.add_piece(white_bishop, 'f1')
-        expect { board.validate_move('f1', 'b5') }.to raise_error(IllegalMoveError)
-      end
-    end
-
-    context 'when moving a white bishop on f1 to b5, with a white pawn blocking on b5' do
-      it 'raises IllegalMoveError' do
-        board.add_piece(white_pawn, 'b5')
-        board.add_piece(white_bishop, 'f1')
-        expect { board.validate_move('f1', 'b5') }.to raise_error(IllegalMoveError)
       end
     end
   end

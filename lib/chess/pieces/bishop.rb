@@ -10,7 +10,8 @@ class Bishop < Piece
   include BasicDirectionalMove
 
   def initialize(color)
-    super(color)
+    symbol = color == 'white' ? '♗' : '♝'
+    super(color, symbol)
     # default move = diagonals
     # directions!
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
@@ -26,10 +27,5 @@ class Bishop < Piece
     blocked = board.blocked_path?(from, to)
 
     @possible_directions.include?(move_direction) && !blocked
-  end
-
-  # Bishop representation
-  def to_s
-    color == 'white' ? '♗' : '♝'
   end
 end

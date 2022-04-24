@@ -88,21 +88,4 @@ RSpec.describe King do
       end
     end
   end
-
-  describe '#to_s' do
-    let(:white_king) { described_class.new('white') }
-    let(:black_king) { described_class.new('black') }
-
-    context 'when its a white king' do
-      it 'returns the white king symbol (♔)' do
-        expect(white_king.to_s).to eql("♔")
-      end
-    end
-
-    context 'when its a black king' do
-      it 'returns the white king symbol (♚)' do
-        expect(black_king.to_s).to eql("♚")
-      end
-    end
-  end
 end

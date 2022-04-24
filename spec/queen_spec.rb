@@ -78,21 +78,4 @@ RSpec.describe Queen do
       end
     end
   end
-
-  describe '#to_s' do
-    let(:white_queen) { described_class.new('white') }
-    let(:black_queen) { described_class.new('black') }
-
-    context 'when its a white queen' do
-      it 'returns the white queen symbol (♕)' do
-        expect(white_queen.to_s).to eql("♕")
-      end
-    end
-
-    context 'when its a black queen' do
-      it 'returns the white queen symbol (♛)' do
-        expect(black_queen.to_s).to eql("♛")
-      end
-    end
-  end
 end

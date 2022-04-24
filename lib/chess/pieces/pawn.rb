@@ -7,7 +7,8 @@ require_relative './piece'
 # @attr [String] color piece color(eg. black or white)
 class Pawn < Piece
   def initialize(color)
-    super(color)
+    symbol = color == 'white' ? '♙' : '♟'
+    super(color, symbol)
     # default move = +1 rank, same file
     # +2 ranks on first move
     # [-1, 1] and [1, 1] only when capturing
@@ -24,14 +25,17 @@ class Pawn < Piece
     target_piece = board.get_piece_at(to)
     from_rank, = board.parse_coordinate(from)
 
+    # Cant move if there is a same color piece on
+    return false if same_color?(target_piece)
+
     # Check if there is a piece of oposite color
     # TODO, check en passant
     if target_piece && target_piece.color != color
-      # Check capture
       return true if @posibles_captures.include?(board.calculate_distance_vector(from, to))
     else
       # Check displacement
       distance = board.calculate_distance_vector(from, to)
+      # TODO, check also for black, refactor!
       return false if distance == [2, 0] && from_rank != 1
       return true if @posible_moves.include?(distance) && !board.blocked_path?(from, to)
     end
@@ -45,10 +49,5 @@ class Pawn < Piece
   # @param to [String] the destination square coordinate
   def defends_square?(board, from, to)
     @posibles_captures.include?(board.calculate_distance_vector(from, to))
-  end
-
-  # Pawn representation
-  def to_s
-    color == 'white' ? '♙' : '♟'
   end
 end

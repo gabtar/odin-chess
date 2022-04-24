@@ -8,7 +8,8 @@ require_relative './piece'
 # @attr [String] color piece color(eg. black or white)
 class King < Piece
   def initialize(color)
-    super(color)
+    symbol = color == 'white' ? '♔' : '♚'
+    super(color, symbol)
     # default move = horizontal + vertical + diagonals
     # but only 1 square at a time
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1] [0, -1]]
@@ -43,10 +44,5 @@ class King < Piece
   def defends_square?(board, from, to)
     opposite_color = color == 'white' ? 'black' : 'white'
     @possible_directions.include?(board.calculate_distance_vector(from, to)) && !board.defended?(to, opposite_color)
-  end
-
-  # King representation
-  def to_s
-    color == 'white' ? '♔' : '♚'
   end
 end

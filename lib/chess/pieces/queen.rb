@@ -10,7 +10,8 @@ class Queen < Piece
   include BasicDirectionalMove
 
   def initialize(color)
-    super(color)
+    symbol = color == 'white' ? '♕' : '♛'
+    super(color, symbol)
     # default move = horizontal + vertical + diagonals
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1] [0, -1]]
   end
@@ -25,10 +26,5 @@ class Queen < Piece
     blocked = board.blocked_path?(from, to)
 
     @possible_directions.include?(move_direction) && !blocked
-  end
-
-  # Queen representation
-  def to_s
-    color == 'white' ? '♕' : '♛'
   end
 end

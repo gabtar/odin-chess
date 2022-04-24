@@ -70,21 +70,4 @@ RSpec.describe Rook do
       end
     end
   end
-
-  describe '#to_s' do
-    let(:white_rook) { described_class.new('white') }
-    let(:black_rook) { described_class.new('black') }
-
-    context 'when its a white rook' do
-      it 'returns the white rook symbol (♖)' do
-        expect(white_rook.to_s).to eql("♖")
-      end
-    end
-
-    context 'when its a black rook' do
-      it 'returns the white rook symbol (♜)' do
-        expect(black_rook.to_s).to eql("♜")
-      end
-    end
-  end
 end

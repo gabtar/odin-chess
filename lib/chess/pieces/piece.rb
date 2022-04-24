@@ -6,8 +6,9 @@
 class Piece
   attr_reader :color
 
-  def initialize(color)
+  def initialize(color, symbol)
     @color = color
+    @symbol = symbol
   end
 
   # Indicates if the +other_piece+ is a same color piece or not.
@@ -16,5 +17,10 @@ class Piece
     return false if other_piece.nil?
 
     color == other_piece.color
+  end
+
+  # Piece symbol representation
+  def to_s
+    @symbol
   end
 end
