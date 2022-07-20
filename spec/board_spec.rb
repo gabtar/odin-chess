@@ -9,7 +9,7 @@ require_relative '../lib/chess/errors/illegal_move'
 RSpec.describe Board do
   describe '#add_piece' do
     subject(:board) { described_class.new }
-    let(:black_pawn) { Pawn.new('black') }
+    let(:black_pawn) { instance_double(Pawn) }
 
     context 'when adding a piece to a1 square' do
       it 'adds the piece to the board in the a1 square' do
@@ -26,6 +26,18 @@ RSpec.describe Board do
       it 'dont add the piece to the board and raises an InvalidCoordinateError' do
         expect { board.add_piece(black_pawn, 'z5') }.to raise_error(InvalidCoordinateError)
         expect(board.squares[0][0]).to eq(nil)
+      end
+    end
+  end
+
+  describe '#get_piece_at' do
+    subject(:board) { described_class.new }
+    let(:black_pawn) { instance_double(Pawn) }
+
+    context 'when adding a piece to a1 square' do
+      it 'adds the piece to the board in the a1 square' do
+        board.add_piece(black_pawn, 'c4')
+        expect(board.get_piece_at('c4')).to eql(black_pawn)
       end
     end
   end
@@ -118,8 +130,7 @@ RSpec.describe Board do
 
   describe '#blocked_path?' do
     subject(:board) { described_class.new }
-    let(:black_pawn) { Pawn.new('black') }
-    let(:black_pawn_two) { Pawn.new('white') }
+    let(:black_pawn) { instance_double(Pawn) }
 
     context 'when checking from a1 to a3 in a clean board' do
       it 'returns false' do
@@ -150,12 +161,14 @@ RSpec.describe Board do
 
   describe '#defended?' do
     subject(:board) { described_class.new }
-    let(:white_pawn) { Pawn.new('white') }
-    let(:black_pawn) { Pawn.new('black') }
+    let(:white_pawn) { instance_double(Pawn) }
+    let(:black_pawn) { instance_double(Pawn) }
 
     context 'when d4 square is defended by a pawn on e3' do
       it 'returns true' do
         board.add_piece(white_pawn, 'e3')
+        allow(white_pawn).to receive(:color).and_return('white')
+        allow(white_pawn).to receive(:defends_square?).with(board, 'e3', 'd4').and_return(true)
         expect(board.defended?('d4', 'white')).to be_truthy
       end
     end
@@ -163,6 +176,8 @@ RSpec.describe Board do
     context 'when d4 square is not defended by white' do
       it 'returns false' do
         board.add_piece(black_pawn, 'e3')
+        allow(black_pawn).to receive(:color).and_return('black')
+        allow(white_pawn).to receive(:defends_square?).with(board, 'd4', 'e3').and_return(true)
         expect(board.defended?('d4', 'white')).to be_falsy
       end
     end

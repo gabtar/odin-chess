@@ -26,7 +26,7 @@ class King < Piece
     blocked_by_same_color = same_color?(board.get_piece_at(to))
 
     # If opponent piece cannot capture if it's defended
-    unless board.get_piece_at(to).nil? && !same_color?(board.get_piece_at(to))
+    unless board.get_piece_at(to).nil? && !blocked_by_same_color
       # Check not defended by opponent pieces
       defended = board.defended?(to, 'white')
     end
