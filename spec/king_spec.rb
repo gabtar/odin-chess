@@ -36,7 +36,6 @@ RSpec.describe King do
         allow(board).to receive(:calculate_distance_vector).with('e8', 'd7').and_return(valid_king_move)
         allow(board).to receive(:get_piece_at).with('d7').and_return(pawn)
         allow(pawn).to receive(:color).and_return('black')
-        allow(board).to receive(:defended?).and_return(false)
         allow(board).to receive(:blocked_path?).with('e8', 'd7').and_return(false)
         expect(black_king.can_move_to?(board, 'e8', 'd7')).to be_falsy
       end
@@ -47,44 +46,8 @@ RSpec.describe King do
         allow(board).to receive(:calculate_distance_vector).with('g8', 'h7').and_return(valid_king_move)
         allow(board).to receive(:get_piece_at).with('h7').and_return(pawn)
         allow(pawn).to receive(:color).and_return('white')
-        allow(board).to receive(:defended?).and_return(false)
         allow(board).to receive(:blocked_path?).with('g8', 'h7').and_return(false)
         expect(black_king.can_move_to?(board, 'g8', 'h7')).to be_truthy
-      end
-    end
-
-    context 'when trying to capture from g8 a defended pawn on h7' do
-      it 'returns false' do
-        allow(board).to receive(:calculate_distance_vector).with('g8', 'h7').and_return(valid_king_move)
-        allow(board).to receive(:get_piece_at).with('h7').and_return(pawn)
-        allow(pawn).to receive(:color).and_return('white')
-        allow(board).to receive(:defended?).and_return(true)
-        allow(board).to receive(:blocked_path?).with('g8', 'h7').and_return(false)
-        expect(black_king.can_move_to?(board, 'g8', 'h7')).to be_falsy
-      end
-    end
-  end
-
-  describe '#defends_square?' do
-    subject(:white_king) { described_class.new('white') }
-    let(:board) { instance_double(Board) }
-    let(:pawn) { instance_double(Pawn) }
-    let(:valid_king_move) { [1, 1] }
-    let(:invalid_king_move) { [3, 1] }
-
-    context 'when on a clean board from e1 defends f2' do
-      it 'returns true' do
-        allow(board).to receive(:calculate_distance_vector).with('e1', 'f2').and_return(valid_king_move)
-        allow(board).to receive(:defended?).with('f2', 'black').and_return(false)
-        expect(white_king.defends_square?(board, 'e1', 'f2')).to be_truthy
-      end
-    end
-
-    context 'when on a clean board from e1 not defends h5' do
-      it 'returns true' do
-        allow(board).to receive(:calculate_distance_vector).with('e1', 'h5').and_return(invalid_king_move)
-        allow(board).to receive(:defended?).with('h5', 'black').and_return(false)
-        expect(white_king.defends_square?(board, 'e1', 'h5')).to be_falsy
       end
     end
   end

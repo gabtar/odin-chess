@@ -16,6 +16,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
+    ruby_deep_clone (0.8.0)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -28,6 +29,7 @@ PLATFORMS
 
 DEPENDENCIES
   rspec (~> 3.11)
+  ruby_deep_clone (~> 0.8.0)
   simplecov
 
 BUNDLED WITH

@@ -27,13 +27,4 @@ class Knight < Piece
       @possible_directions.include?(move_distance)
     end
   end
-
-  # Checks if the Knight defends the +to+ square at +from+ position in the
-  # current board status
-  # @param board [Board] a chess board object
-  # @param from [String] the starting square coordinate
-  # @param to [String] the destination square coordinate
-  def defends_square?(board, from, to)
-    @possible_directions.include?(board.calculate_distance_vector(from, to))
-  end
 end

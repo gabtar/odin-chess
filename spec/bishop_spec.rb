@@ -23,7 +23,8 @@ RSpec.describe Bishop do
 
     context 'when moving from a1 to a8' do
       it 'returns false' do
-        allow(board).to receive(:calculate_direction_vector).with('a1', 'a8').and_return(bishop_invalid_direction_vector)
+        allow(board).to receive(:calculate_direction_vector).with('a1',
+                                                                  'a8').and_return(bishop_invalid_direction_vector)
         allow(board).to receive(:get_piece_at).with('a8').and_return(nil)
         expect(black_bishop.can_move_to?(board, 'a1', 'a8')).to be_falsy
       end
@@ -54,29 +55,6 @@ RSpec.describe Bishop do
         allow(board).to receive(:get_piece_at).with('f3').and_return(nil)
         allow(board).to receive(:blocked_path?).with('b7', 'f3').and_return(true)
         expect(black_bishop.can_move_to?(board, 'b7', 'f3')).to be_falsy
-      end
-    end
-  end
-
-  describe '#defends_square?' do
-    subject(:black_bishop) { described_class.new('black') }
-    let(:board) { instance_double(Board) }
-    let(:bishop_valid_direction_vector) { [1, 1] }
-    let(:bishop_invalid_direction_vector) { [0, 1] }
-
-    context 'when defends c6 square from f3 in a clean board' do
-      it 'returns true' do
-        allow(board).to receive(:calculate_direction_vector).with('f3', 'c6').and_return(bishop_valid_direction_vector)
-        allow(board).to receive(:blocked_path?).with('f3', 'c6').and_return(false)
-        expect(black_bishop.defends_square?(board, 'f3', 'c6')).to be_truthy
-      end
-    end
-
-    context 'when not defends a1 square from h8 by a pawn blocking on d4' do
-      it 'returns false' do
-        allow(board).to receive(:calculate_direction_vector).with('h8', 'a1').and_return(bishop_valid_direction_vector)
-        allow(board).to receive(:blocked_path?).with('h8', 'a1').and_return(true)
-        expect(black_bishop.defends_square?(board, 'h8', 'a1')).to be_falsy
       end
     end
   end

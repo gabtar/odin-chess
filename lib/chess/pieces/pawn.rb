@@ -41,13 +41,4 @@ class Pawn < Piece
     end
     false
   end
-
-  # Checks if the pawn defends the +to+ square at +from+ position in the
-  # current board status
-  # @param board [Board] a chess board object
-  # @param from [String] the starting square coordinate
-  # @param to [String] the destination square coordinate
-  def defends_square?(board, from, to)
-    @posibles_captures.include?(board.calculate_distance_vector(from, to))
-  end
 end

@@ -2,6 +2,7 @@
 
 require_relative '../lib/chess/board/board'
 require_relative '../lib/chess/pieces/pawn'
+require_relative '../lib/chess/pieces/king'
 require_relative '../lib/chess/pieces/bishop'
 require_relative '../lib/chess/errors/invalid_coordinate'
 require_relative '../lib/chess/errors/illegal_move'
@@ -159,26 +160,47 @@ RSpec.describe Board do
     end
   end
 
-  describe '#defended?' do
+  describe '#in_check?' do
     subject(:board) { described_class.new }
-    let(:white_pawn) { instance_double(Pawn) }
-    let(:black_pawn) { instance_double(Pawn) }
+    let(:king) { instance_double(King) }
 
-    context 'when d4 square is defended by a pawn on e3' do
-      it 'returns true' do
-        board.add_piece(white_pawn, 'e3')
-        allow(white_pawn).to receive(:color).and_return('white')
-        allow(white_pawn).to receive(:defends_square?).with(board, 'e3', 'd4').and_return(true)
-        expect(board.defended?('d4', 'white')).to be_truthy
+    context 'when the white king is not in check' do
+      it 'returns false' do
+        allow(king).to receive(:color).and_return('white')
+        allow(king).to receive(:is_a?).and_return(King)
+        allow(king).to receive(:can_move_to?).with(any_args).and_return(false)
+        board.add_piece(king, 'a1')
+        expect(board.in_check?('white')).to be_falsy
       end
     end
 
-    context 'when d4 square is not defended by white' do
+    context 'when the white king is in check' do
+      let(:bishop) { instance_double(Bishop) }
+
+      it 'returns true' do
+        allow(king).to receive(:color).and_return('white')
+        allow(king).to receive(:is_a?).and_return(King)
+        allow(king).to receive(:can_move_to?).with(any_args).and_return(false)
+        allow(bishop).to receive(:color).and_return('black')
+        allow(bishop).to receive(:can_move_to?).with(any_args).and_return(true)
+        board.add_piece(king, 'a1')
+        board.add_piece(bishop, 'h8')
+        expect(board.in_check?('white')).to be_truthy
+      end
+    end
+
+    context 'when the black king is not in check' do
+      let(:bishop) { instance_double(Bishop) }
+
       it 'returns false' do
-        board.add_piece(black_pawn, 'e3')
-        allow(black_pawn).to receive(:color).and_return('black')
-        allow(white_pawn).to receive(:defends_square?).with(board, 'd4', 'e3').and_return(true)
-        expect(board.defended?('d4', 'white')).to be_falsy
+        allow(king).to receive(:color).and_return('white')
+        allow(king).to receive(:is_a?).and_return(King)
+        allow(king).to receive(:can_move_to?).with(any_args).and_return(false)
+        allow(bishop).to receive(:color).and_return('white')
+        allow(bishop).to receive(:can_move_to?).with(any_args).and_return(true)
+        board.add_piece(king, 'a1')
+        board.add_piece(bishop, 'h8')
+        expect(board.in_check?('white')).to be_falsy
       end
     end
   end

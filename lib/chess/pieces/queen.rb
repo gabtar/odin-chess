@@ -15,16 +15,4 @@ class Queen < Piece
     # default move = horizontal + vertical + diagonals
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1] [0, -1]]
   end
-
-  # Checks if the Queen defends the +to+ square at +from+ position in the
-  # current board status
-  # @param board [Board] a chess board object
-  # @param from [String] the starting square coordinate
-  # @param to [String] the destination square coordinate
-  def defends_square?(board, from, to)
-    move_direction = board.calculate_direction_vector(from, to)
-    blocked = board.blocked_path?(from, to)
-
-    @possible_directions.include?(move_direction) && !blocked
-  end
 end

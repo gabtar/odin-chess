@@ -57,28 +57,4 @@ RSpec.describe Rook do
       end
     end
   end
-
-  describe '#defends_square?' do
-    subject(:black_rook) { Rook.new('black') }
-    let(:board) { instance_double(Board) }
-    let(:black_pawn) { instance_double(Pawn) }
-    let(:rook_valid_direction_vector) { [1, 0] }
-    let(:rook_invalid_direction_vector) { [0, 1] }
-
-    context 'when on e6 on a clean board defends e1' do
-      it 'returns true' do
-        allow(board).to receive(:calculate_direction_vector).with('e6', 'e1').and_return(rook_valid_direction_vector)
-        allow(board).to receive(:blocked_path?).with('e6', 'e1').and_return(false)
-        expect(black_rook.defends_square?(board, 'e6', 'e1')).to be_truthy
-      end
-    end
-
-    context 'when on f6 cant defend a6 beacuse of a pawn blocking on b6' do
-      it 'returns false' do
-        allow(board).to receive(:calculate_direction_vector).with('f6', 'a6').and_return(rook_valid_direction_vector)
-        allow(board).to receive(:blocked_path?).with('f6', 'a6').and_return(true)
-        expect(black_rook.defends_square?(board, 'f6', 'a6')).to be_falsy
-      end
-    end
-  end
 end

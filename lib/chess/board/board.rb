@@ -2,7 +2,6 @@
 
 require_relative '../errors/invalid_coordinate'
 require_relative '../errors/illegal_move'
-# require 'pry-byebug'
 
 # Class for chess board
 #
@@ -65,35 +64,24 @@ class Board
     distance_vector.map { |item| item.zero? ? 0 : item / item.abs }
   end
 
-  # Checks if the +square+ coordinate passed is defended by the passed +army+ on the board
-  # @param square [String] the coordinate of the square we want to know if its defended
-  # @param army [String] the color of the army we want to know if they are defending the square
-  def defended?(square, army)
-    # rank = 0
-    # file = 0
-    # squares.any? do |row|
-    #   row.any? do |piece|
-    #     coordinate = (97 + rank).chr + (file + 1).to_s
-    #     p coordinate
-    #     !piece.nil? && piece.color == army && piece.defends_square?(self, coordinate, square)
-    #     file += 1
-    #   end
-    #   rank += 1
-    # end
-    defended = false
-    squares.each_with_index do |rank, rank_index|
-      rank.each_with_index do |file, file_index|
-        coordinate = (97 + file_index).chr + (rank_index + 1).to_s
+  # Validates if the passed colour is in check or not in the current position
+  # @param army [String] the colour of the side we want to know if it's in check
+  # @return [Boolean] true if its in check otherwise false
+  def in_check?(army)
+    king = @squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
 
-        defended = true if !file.nil? && file.color == army && file.defends_square?(self, coordinate, square)
+    king_coordinate = !king.nil? ? get_coordinate(king) : nil
+
+    is_in_check = false
+    @squares.flatten.each do |piece|
+      if !piece.nil? && (piece.can_move_to?(self, get_coordinate(piece),
+                                            king_coordinate) && piece.color != king.color)
+        is_in_check = true
       end
     end
-    defended
-  end
 
-  # # TODO, Converts current board position to FEN notation string
-  # def serialize
-  # end
+    is_in_check
+  end
 
   # Returns the position in the +squares+ array for the given coordinate
   # @param coordinate [String] the board coordinate eg. 'a1'
@@ -131,5 +119,16 @@ class Board
     next_file = file + direction[1]
 
     "#{(next_file + 97).chr}#{next_rank + 1}"
+  end
+
+  # Internal method for #in_check? that returns the cordinate or the pice or nil
+  def get_coordinate(piece)
+    coordinate = nil
+    @squares.each_with_index do |rank, rank_index|
+      rank.each_with_index do |file, file_index|
+        coordinate = (97 + file_index).chr + (rank_index + 1).to_s if file.eql? piece
+      end
+    end
+    coordinate
   end
 end

@@ -67,27 +67,4 @@ RSpec.describe Queen do
       end
     end
   end
-
-  describe '#defends_square?' do
-    subject(:black_queen) { described_class.new('black') }
-    let(:board) { instance_double(Board) }
-    let(:white_pawn) { instance_double(Pawn) }
-    let(:valid_queen_direction_vector) { [1, 1] }
-
-    context 'when on a clean board from c2 defends a4' do
-      it 'returns true' do
-        allow(board).to receive(:calculate_direction_vector).with('c2', 'a4').and_return(valid_queen_direction_vector)
-        allow(board).to receive(:blocked_path?).with('c2', 'a4').and_return(false)
-        expect(black_queen.defends_square?(board, 'c2', 'a4')).to be_truthy
-      end
-    end
-
-    context 'when from d2 cant defend h2 because of a pawn blocking on f2' do
-      it 'returns false' do
-        allow(board).to receive(:calculate_direction_vector).with('d2', 'h2').and_return(valid_queen_direction_vector)
-        allow(board).to receive(:blocked_path?).with('d2', 'h2').and_return(true)
-        expect(black_queen.defends_square?(board, 'd2', 'h2')).to be_falsy
-      end
-    end
-  end
 end

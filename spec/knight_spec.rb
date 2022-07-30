@@ -38,23 +38,4 @@ RSpec.describe Knight do
       end
     end
   end
-
-  describe '#defends_square??' do
-    subject(:black_knight) { described_class.new('black') }
-    let(:board) { instance_double(Board) }
-
-    context 'when a knight on a2 defends a square on c3' do
-      it 'returns true' do
-        allow(board).to receive(:calculate_distance_vector).with('a2', 'c3').and_return([1, 2])
-        expect(black_knight.defends_square?(board, 'a2', 'c3')).to be_truthy
-      end
-    end
-
-    context 'when a black knight on c5 not defends c6 square' do
-      it 'returns false' do
-        allow(board).to receive(:calculate_distance_vector).with('c5', 'c6').and_return([0, 1])
-        expect(black_knight.defends_square?(board, 'c5', 'c6')).to be_falsy
-      end
-    end
-  end
 end

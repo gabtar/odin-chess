@@ -22,27 +22,8 @@ class King < Piece
   # @param to [String] the destination square coordinate
   def can_move_to?(board, from, to)
     move_direction = board.calculate_distance_vector(from, to)
-    defended = false
     blocked_by_same_color = same_color?(board.get_piece_at(to))
 
-    # If opponent piece cannot capture if it's defended
-    unless board.get_piece_at(to).nil? && !blocked_by_same_color
-      # Check not defended by opponent pieces
-      defended = board.defended?(to, 'white')
-    end
-
-    return true if @possible_directions.include?(move_direction) && !board.blocked_path?(from, to) && !defended && !blocked_by_same_color
-
-    false
-  end
-
-  # Checks if the King defends the +to+ square at +from+ position in the
-  # current board status
-  # @param board [Board] a chess board object
-  # @param from [String] the starting square coordinate
-  # @param to [String] the destination square coordinate
-  def defends_square?(board, from, to)
-    opposite_color = color == 'white' ? 'black' : 'white'
-    @possible_directions.include?(board.calculate_distance_vector(from, to)) && !board.defended?(to, opposite_color)
+    @possible_directions.include?(move_direction) && !blocked_by_same_color
   end
 end

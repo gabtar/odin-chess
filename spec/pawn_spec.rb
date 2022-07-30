@@ -52,32 +52,4 @@ RSpec.describe Pawn do
       end
     end
   end
-
-  describe '#defends_square??' do
-    subject(:white_pawn) { described_class.new('white') }
-    let(:board) { instance_double(Board) }
-    let(:valid_pawn_capture_distance) { [1, 1] }
-    let(:invalid_pawn_distance_vector) { [3, 0] }
-
-    context 'when a pawn on a2 defends a square on b3' do
-      it 'returns ture' do
-        allow(board).to receive(:calculate_distance_vector).with('a2', 'b3').and_return(valid_pawn_capture_distance)
-        expect(white_pawn.defends_square?(board, 'a2', 'b3')).to be_truthy
-      end
-    end
-
-    context 'when a pawn on h2 defends a square on g3' do
-      it 'returns ture' do
-        allow(board).to receive(:calculate_distance_vector).with('h2', 'g3').and_return(valid_pawn_capture_distance)
-        expect(white_pawn.defends_square?(board, 'h2', 'g3')).to be_truthy
-      end
-    end
-
-    context 'when a pawn on h2 not defends a square on a1' do
-      it 'returns false' do
-        allow(board).to receive(:calculate_distance_vector).with('h2', 'a1').and_return(invalid_pawn_distance_vector)
-        expect(white_pawn.defends_square?(board, 'h2', 'a1')).to be_falsy
-      end
-    end
-  end
 end
