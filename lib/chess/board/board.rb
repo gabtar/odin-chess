@@ -108,6 +108,18 @@ class Board
     squares[rank][file]
   end
 
+  # Returns the string representing the current position of the pieces in the board
+  def to_s
+    board_str = ''
+    squares.each do |row|
+      row.each do |square|
+        board_str += square.nil? ? ' ' : square
+      end
+      board_str += "\n"
+    end
+    board_str
+  end
+
   private
 
   # Internal method for #blocked_path? returns the next square in the specified

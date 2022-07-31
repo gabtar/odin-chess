@@ -204,4 +204,21 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe '#to_s' do
+    subject(:board) { described_class.new }
+    it 'returns the string representation of the current board' do
+      board_string = <<-EMPTY_BOARD
+        
+        
+        
+        
+        
+        
+        
+        
+      EMPTY_BOARD
+      expect(board.to_s).to eq(board_string)
+    end
+  end
 end
