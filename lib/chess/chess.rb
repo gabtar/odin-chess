@@ -8,6 +8,8 @@ require_relative './pieces/king'
 require_relative './pieces/queen'
 require_relative './pieces/pawn'
 require_relative './pieces/rook'
+require_relative './board/board'
+require_relative './player'
 
 # Main class for a chess game
 #
@@ -25,11 +27,19 @@ class Chess
     @turn = 'white'
   end
 
-  # Adds a move to the current game
+  # Adds a valid move to the current game and updates the game status
   # @param from [String] the starting square
   # @param to [String] the destination square
+  # TODO refactor for queening move!!!
   def add_move(from, to)
     validate_move(from, to)
+
+    piece = @board.get_piece_at(from)
+    # TODO, add to captured pieces in case of capture
+    # TODO, check en passant / castle moves
+    @board.add_piece(nil, from)
+    @board.add_piece(piece, to)
+
     @moves_list << [from, to]
   end
 
@@ -56,6 +66,37 @@ class Chess
   # @return [String] the YAML serialized current game
   def serialize
     YAML.dump(self)
+  end
+
+  # Checks if the current player is in checkmate
+  # @return [Boolean]
+  def checkmate?
+    checkmate = false
+    if @board.in_check?(@turn)
+      checkmate = true
+      coordinates = []
+      8.times do |number|
+        coordinates << ('a'..'h').to_a.map! { |rank| rank + (number + 1).to_s }
+      end
+      coordinates.flatten.each do |from|
+        piece = @board.get_piece_at(from)
+
+        next if piece.nil? || piece.color != @turn
+
+        coordinates.flatten.each do |to|
+          next if from == to
+
+          begin
+            validate_move(from, to)
+            return false
+          rescue IllegalMoveError
+            checkmate = true
+          end
+        end
+      end
+    end
+
+    checkmate
   end
 
   # Loads a chess game previously saved

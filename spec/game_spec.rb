@@ -57,14 +57,4 @@ RSpec.describe Game do
       end
     end
   end
-
-  describe '#play_game' do
-    subject(:game) { described_class.new }
-    context 'when the black player gives checkmate' do
-      it 'finish the game' do
-        # TODO
-        raise "Not implemented"
-      end
-    end
-  end
 end

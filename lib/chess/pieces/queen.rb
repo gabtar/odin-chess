@@ -13,6 +13,6 @@ class Queen < Piece
     symbol = color == 'white' ? '♕' : '♛'
     super(color, symbol)
     # default move = horizontal + vertical + diagonals
-    @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1] [0, -1]]
+    @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]]
   end
 end

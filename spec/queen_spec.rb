@@ -23,9 +23,9 @@ RSpec.describe Queen do
     end
 
     context 'when moving in an invalid direction from a1 to b3' do
-      it 'raises IllegalMoveError' do
+      it 'returns false' do
         allow(board).to receive(:calculate_direction_vector).with('a1', 'b3').and_raise(IllegalMoveError)
-        expect { black_queen.can_move_to?(board, 'a1', 'b3') }.to raise_error(IllegalMoveError)
+        expect(black_queen.can_move_to?(board, 'a1', 'b3')).to be_falsy
       end
     end
 

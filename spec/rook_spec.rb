@@ -10,7 +10,7 @@ RSpec.describe Rook do
     let(:board) { instance_double(Board) }
     let(:white_pawn) { instance_double(Pawn) }
     let(:rook_valid_direction_vector) { [1, 0] }
-    let(:rook_invalid_direction_vector) { [0, 1] }
+    let(:rook_invalid_direction_vector) { [1, 1] }
 
     context 'when moving from b1 to b5 in a clean position' do
       it 'returns true' do
@@ -25,6 +25,7 @@ RSpec.describe Rook do
       it 'returns false' do
         allow(board).to receive(:calculate_direction_vector).with('h8', 'd4').and_return(rook_invalid_direction_vector)
         allow(board).to receive(:get_piece_at).with('d4').and_return(nil)
+        allow(board).to receive(:blocked_path?).with('h8', 'd4').and_return(false)
         expect(black_rook.can_move_to?(board, 'h8', 'd4')).to be_falsy
       end
     end

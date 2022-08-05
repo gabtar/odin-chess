@@ -44,5 +44,6 @@ class Game
 
   def new_game
     @game = create_new_game
+    #TODO ask each player to play move until ists check mate
   end
 end

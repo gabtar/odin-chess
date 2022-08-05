@@ -207,16 +207,31 @@ RSpec.describe Board do
 
   describe '#to_s' do
     subject(:board) { described_class.new }
+
     it 'returns the string representation of the current board' do
       board_string = <<-EMPTY_BOARD
-        
-        
-        
-        
-        
-        
-        
-        
+           Black Player
+
+  |-------------------------------|
+8 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+7 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+6 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+5 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+4 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+3 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+2 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+1 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+    a   b   c   d   e   f   g   h
+
+            White Player
       EMPTY_BOARD
       expect(board.to_s).to eq(board_string)
     end

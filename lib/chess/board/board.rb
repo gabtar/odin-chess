@@ -110,14 +110,17 @@ class Board
 
   # Returns the string representing the current position of the pieces in the board
   def to_s
-    board_str = ''
-    squares.each do |row|
+    board_str = "           Black Player\n"
+    board_str += "\n  |-------------------------------|\n"
+    squares.reverse.each_with_index do |row, index|
+      board_str += "#{8 - index} |"
       row.each do |square|
-        board_str += square.nil? ? ' ' : square
+        board_str += square.nil? ? '   |' : " #{square} |"
       end
-      board_str += "\n"
+      board_str += "\n  |-------------------------------|\n"
     end
-    board_str
+    board_str += "    a   b   c   d   e   f   g   h\n\n"
+    board_str += "            White Player\n"
   end
 
   private

@@ -12,7 +12,7 @@ class King < Piece
     super(color, symbol)
     # default move = horizontal + vertical + diagonals
     # but only 1 square at a time
-    @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1] [0, -1]]
+    @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]]
   end
 
   # Indicates if the King can move +from+ specified square +to+ destination
