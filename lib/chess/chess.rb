@@ -10,6 +10,7 @@ require_relative './pieces/pawn'
 require_relative './pieces/rook'
 require_relative './board/board'
 require_relative './player'
+require_relative './errors/illegal_move'
 
 # Main class for a chess game
 #
@@ -50,7 +51,7 @@ class Chess
   def validate_move(from, to)
     piece_to_move = @board.get_piece_at(from)
 
-    raise IllegalMoveError if piece_to_move.color != @turn
+    raise IllegalMoveError.new('Invalid piece') if piece_to_move.nil? || piece_to_move.color != @turn
 
     raise IllegalMoveError unless piece_to_move.can_move_to?(@board, from, to)
 
