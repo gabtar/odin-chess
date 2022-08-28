@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 require_relative '../lib/chess/chess'
-require_relative '../lib/game'
 require_relative '../lib/game_configurator'
 
 RSpec.describe GameConfigurator do
   it 'should create a game with initial chess position' do
-    game = Game.new
+    game = Class.new
     game.extend(GameConfigurator)
     chess = game.create_new_game
     board = chess.instance_variable_get(:@board)

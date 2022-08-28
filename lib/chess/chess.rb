@@ -42,6 +42,7 @@ class Chess
     @board.add_piece(piece, to)
 
     @moves_list << [from, to]
+    switch_turn
   end
 
   # Validates if the passed move +from+ square +to+ square is a legal chess move
@@ -53,9 +54,9 @@ class Chess
 
     raise IllegalMoveError.new('Invalid piece') if piece_to_move.nil? || piece_to_move.color != @turn
 
-    raise IllegalMoveError unless piece_to_move.can_move_to?(@board, from, to)
+    raise IllegalMoveError.new('Illegal piece move') unless piece_to_move.can_move_to?(@board, from, to)
 
-    raise IllegalMoveError if will_put_my_king_in_check(from, to)
+    raise IllegalMoveError.new('Cannot put king in check') if will_put_my_king_in_check(from, to)
   end
 
   # Toggles the current player turn to move
