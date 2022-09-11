@@ -41,6 +41,9 @@ class Chess
     @board.add_piece(nil, from)
     @board.add_piece(piece, to)
 
+    # Move should be a class or better a Struct?? and moves list an array of objects?
+    # Should have Player, 
+    # Struct.new(:from, :to, :piece?, board_before?)
     @moves_list << [from, to]
     switch_turn
   end

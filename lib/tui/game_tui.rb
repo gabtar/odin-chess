@@ -2,16 +2,11 @@
 
 require 'curses'
 
+require_relative './tui/menu_chess'
+require_relative './tui/exit_command'
+require_relative './tui/save_command'
+require_relative './tui/enter_move_command'
 require_relative './game_configurator'
-
-require_relative './tui/menu/command/load_command'
-require_relative './tui/menu/command/enter_move_command'
-require_relative './tui/menu/command/new_game_command'
-require_relative './tui/menu/command/sub_menu_command'
-require_relative './tui/menu/command/load_game_command'
-require_relative './tui/menu/command/exit_command'
-require_relative './tui/menu/command/save_command'
-require_relative './tui/menu/menu_chess'
 
 # Game Terminal UI using Curses library
 class GameTUI
@@ -46,7 +41,7 @@ class GameTUI
 
   def initialize
     @game = Game.new
-    # TODO, I should have a curses helper/module for building the user interface
+    # I should have a curses helper for building the user interface
   end
 
   def start
@@ -83,13 +78,13 @@ class GameTUI
 
       new_game_menu = MenuChess.new(menu)
       new_game_menu.add_option(EnterMoveCommand.new(@game, menu))
-      new_game_menu.add_option(SaveCommand.new(@game, menu))
+      new_game_menu.add_option(SaveCommand.new(@game))
       new_game_menu.add_option(ExitCommand.new)
 
       menu_class = MenuChess.new(menu)
-      switch_menu_command = SubMenuCommand.new(menu_class, new_game_menu, 'New game', menu)
+      switch_menu_command = SubMenuCommand.new(menu_class, new_game_menu, 'New game')
       menu_class.add_option(switch_menu_command)
-      menu_class.add_option(LoadGameCommand.new(menu_class, 'Load a game', @game, menu, switch_menu_command))
+      menu_class.add_option(LoadGameCommand.new(menu_class, 'Load a game', @game, @menu, switch_menu_command))
       menu_class.add_option(ExitCommand.new)
 
       menu_class.render
@@ -102,10 +97,12 @@ class GameTUI
         when 13
           menu_class.execute
         when 'x'
-          # TODO: only for testing
           Curses.close_screen
           exit!
         end
+        # TODO: clear/Redraw windows
+        # TODO draw moves list on panel
+        # TODO check for checkmate on every turn
         menu_class.render
         draw_multiline_string(@game.current_game.board.to_s, board)
         draw_moves_list(@game.current_game.moves_list, moves)
@@ -134,15 +131,13 @@ class GameTUI
   end
 
   def draw_moves_list(moves_list, window)
-    # TODO, use Algebraic Notation when displaying moves
     title = 'Moves list'
     window.setpos(1, (window.maxx - title.length) / 2)
     window.addstr(title)
     window.setpos(3, 1)
     move_number = 1
     moves_list.each_slice(2) do |move|
-      move_list = move.map { |m| m.join(',') }
-      window.addstr("#{move_number}. #{move_list}")
+      window.addstr("#{move_number}. #{move}")
       window.setpos(window.cury + 1, 1)
       move_number += 1
     end

@@ -33,4 +33,38 @@ module GameConfigurator
 
     Chess.new(board, Player.new('white'), Player.new('black'))
   end
+
+  def load_game(file)
+    Chess.unserialize(file)
+  end
+end
+
+# Wrapper for the chess game
+# todo add game interface
+class Game
+  attr_accessor :current_game
+
+  include GameConfigurator
+
+  def initialize
+    @current_game = create_new_game
+  end
+
+  def new_game
+    @current_game = create_new_game
+  end
+
+  def load_game(file)
+    @current_game = Chess.unserialize(file)
+  end
+
+  # Add options for all commands used
+  # TODO ADD options for save game, and enter move
+  def add_move(from, to)
+    @current_game.add_move(from, to)
+  end
+
+  def serialize
+    @current_game.serialize
+  end
 end

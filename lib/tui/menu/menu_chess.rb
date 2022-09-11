@@ -1,14 +1,19 @@
 # frozen_string_literal: true
-require "curses"
+
+require 'curses'
+require_relative '../../chess/chess'
 
 # Menu object for a game of chess
 #
 # @attr options [Array] an array of commands for interacting with the Chess game
 # @attr window [Window] a Curses.Window object where the menu will be rendered
 class MenuChess
+  attr_accessor :name, :options, :max_items
+
   include Curses
 
-  def initialize(window, options)
+  def initialize(window, options = [])
+    @name = 'New game menu'
     @options = options
     @active_index = 0
     @max_items = options.length - 1
@@ -45,5 +50,10 @@ class MenuChess
   # Executes the current option action
   def execute
     @options[@active_index].execute
+  end
+
+  def add_option(option)
+    @options << option
+    @max_items = @options.length - 1
   end
 end
