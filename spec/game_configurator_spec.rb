@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/chess/chess'
-require_relative '../lib/game_configurator'
+require_relative '../lib/helpers/game_configurator'
 
 RSpec.describe GameConfigurator do
   it 'should create a game with initial chess position' do

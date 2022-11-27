@@ -2,15 +2,23 @@
 
 require 'curses'
 
-require_relative './tui/menu_chess'
-require_relative './tui/exit_command'
-require_relative './tui/save_command'
-require_relative './tui/enter_move_command'
-require_relative './game_configurator'
+require_relative '../helpers/game_configurator'
+require_relative '../helpers/game_reporter'
+require_relative '../helpers/chess_game'
+
+require_relative './menu/command/load_command'
+require_relative './menu/command/enter_move_command'
+require_relative './menu/command/new_game_command'
+require_relative './menu/command/sub_menu_command'
+require_relative './menu/command/load_game_command'
+require_relative './menu/command/exit_command'
+require_relative './menu/command/save_command'
+require_relative './menu/menu_chess'
 
 # Game Terminal UI using Curses library
 class GameTUI
   include Curses
+  include GameReporter
 
   WELCOME_SCREEN = <<~'WELCOME_SCREEN'
                   ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -40,8 +48,7 @@ class GameTUI
   WELCOME_SCREEN
 
   def initialize
-    @game = Game.new
-    # I should have a curses helper for building the user interface
+    @game = ChessGame.new
   end
 
   def start
@@ -73,18 +80,19 @@ class GameTUI
       moves.box('|', '-')
 
       # Render initial screen
-      draw_multiline_string(@game.current_game.board.to_s, board)
-      draw_moves_list(@game.current_game.moves_list, moves)
+      # draw_multiline_string(@game.current_game.board.to_s, board)
+      draw_multiline_string(board_status(@game.current_game), board)
+      draw_multiline_string(moves_status(@game.current_game), moves, false)
 
       new_game_menu = MenuChess.new(menu)
       new_game_menu.add_option(EnterMoveCommand.new(@game, menu))
-      new_game_menu.add_option(SaveCommand.new(@game))
+      new_game_menu.add_option(SaveCommand.new(@game, menu))
       new_game_menu.add_option(ExitCommand.new)
 
       menu_class = MenuChess.new(menu)
-      switch_menu_command = SubMenuCommand.new(menu_class, new_game_menu, 'New game')
+      switch_menu_command = SubMenuCommand.new(menu_class, new_game_menu, 'New game', menu)
       menu_class.add_option(switch_menu_command)
-      menu_class.add_option(LoadGameCommand.new(menu_class, 'Load a game', @game, @menu, switch_menu_command))
+      menu_class.add_option(LoadGameCommand.new(menu_class, 'Load a game', @game, menu, switch_menu_command))
       menu_class.add_option(ExitCommand.new)
 
       menu_class.render
@@ -97,15 +105,15 @@ class GameTUI
         when 13
           menu_class.execute
         when 'x'
+          # TODO: only for testing
           Curses.close_screen
           exit!
         end
-        # TODO: clear/Redraw windows
-        # TODO draw moves list on panel
-        # TODO check for checkmate on every turn
         menu_class.render
-        draw_multiline_string(@game.current_game.board.to_s, board)
-        draw_moves_list(@game.current_game.moves_list, moves)
+
+        draw_multiline_string(board_status(@game.current_game), board)
+        draw_multiline_string(moves_status(@game.current_game), moves, false)
+
       end
 
       refresh
@@ -114,12 +122,14 @@ class GameTUI
     end
   end
 
-  def draw_multiline_string(string, window)
+  def draw_multiline_string(string, window, center = true)
+    window.clear
+    window.box('|', '-')
     height = string.lines.length
     # Gets the max width of a multiline string
     width = string.lines.max { |a, b| a.length <=> b.length }.length
 
-    initial_y = (window.maxy - height) / 2
+    initial_y = center ? (window.maxy - height) / 2 : 1
     center_x = (window.maxx - width) / 2
     string.lines.map(&:chomp).each do |line|
       window.setpos(initial_y, center_x)
@@ -127,21 +137,6 @@ class GameTUI
       initial_y += 1
     end
     window.setpos(initial_y - 1, center_x * 2)
-    window.refresh
-  end
-
-  def draw_moves_list(moves_list, window)
-    title = 'Moves list'
-    window.setpos(1, (window.maxx - title.length) / 2)
-    window.addstr(title)
-    window.setpos(3, 1)
-    move_number = 1
-    moves_list.each_slice(2) do |move|
-      window.addstr("#{move_number}. #{move}")
-      window.setpos(window.cury + 1, 1)
-      move_number += 1
-    end
-
     window.refresh
   end
 end

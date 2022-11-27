@@ -71,6 +71,8 @@ class Board
     king = @squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
 
     king_coordinate = !king.nil? ? get_coordinate(king) : nil
+    # TODO, temporary fix for test
+    return false if king_coordinate.nil?
 
     is_in_check = false
     @squares.flatten.each do |piece|
@@ -81,6 +83,24 @@ class Board
     end
 
     is_in_check
+  end
+
+  # Checks if the path +from+ square +to+ square is attacked by opposite army
+  # Used for castle validation
+  # @param from [String] the starting square coordinate
+  # @param to [String] the destination square coordinate
+  # @param army [String] the colour of the side we want to know if it's in check
+  def path_attacked?(from, to, army)
+    direction = calculate_direction_vector(from, to)
+    current_square = next_square(from, direction)
+
+    until current_square == to
+      @squares.flatten.each do |piece|
+        return true if !piece.nil? && piece.color != army && piece.can_move_to?(self, get_coordinate(piece), current_square)
+      end
+      current_square = next_square(current_square, direction)
+    end
+    false
   end
 
   # Returns the position in the +squares+ array for the given coordinate
@@ -106,21 +126,6 @@ class Board
   def get_piece_at(coordinate)
     rank, file = parse_coordinate(coordinate)
     squares[rank][file]
-  end
-
-  # Returns the string representing the current position of the pieces in the board
-  def to_s
-    board_str = "           Black Player\n"
-    board_str += "\n  |-------------------------------|\n"
-    squares.reverse.each_with_index do |row, index|
-      board_str += "#{8 - index} |"
-      row.each do |square|
-        board_str += square.nil? ? '   |' : " #{square} |"
-      end
-      board_str += "\n  |-------------------------------|\n"
-    end
-    board_str += "    a   b   c   d   e   f   g   h\n\n"
-    board_str += "            White Player\n"
   end
 
   private

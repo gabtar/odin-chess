@@ -205,35 +205,33 @@ RSpec.describe Board do
     end
   end
 
-  describe '#to_s' do
+  describe '#path_attacked?' do
     subject(:board) { described_class.new }
+    let(:bishop) { instance_double(Bishop) }
+    let(:king) { instance_double(King) }
+    let(:rook) { instance_double(Rook) }
 
-    it 'returns the string representation of the current board' do
-      board_string = <<-EMPTY_BOARD
-           Black Player
+    context 'when the path is not attacked' do
+      it 'returns false' do
+        allow(king).to receive(:color).and_return('white')
+        allow(rook).to receive(:color).and_return('white')
+        board.add_piece(king, 'a1')
+        board.add_piece(rook, 'h8')
+        expect(board.path_attacked?('e1', 'g1', 'white')).to be_falsy
+      end
+    end
 
-  |-------------------------------|
-8 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-7 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-6 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-5 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-4 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-3 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-2 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-1 |   |   |   |   |   |   |   |   |
-  |-------------------------------|
-    a   b   c   d   e   f   g   h
-
-            White Player
-      EMPTY_BOARD
-      expect(board.to_s).to eq(board_string)
+    context 'when the path is attacked' do
+      it 'returns true' do
+        allow(king).to receive(:color).and_return('white')
+        allow(rook).to receive(:color).and_return('white')
+        allow(bishop).to receive(:color).and_return('black')
+        board.add_piece(bishop, 'a6')
+        board.add_piece(king, 'a1')
+        board.add_piece(rook, 'h8')
+        allow(bishop).to receive(:can_move_to?).with(board, 'a6', 'f1').and_return(true)
+        expect(board.path_attacked?('e1', 'g1', 'white')).to be_truthy
+      end
     end
   end
 end

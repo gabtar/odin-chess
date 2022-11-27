@@ -22,6 +22,7 @@ RSpec.describe Chess do
     context 'when it is a valid move' do
       it 'it adds the move to the game' do
         allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
+        allow(board).to receive(:get_piece_at).exactly(3).times.with('b2').and_return(nil)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b2').and_return(true)
         allow(board).to receive(:add_piece).with(any_args)
         allow(board).to receive(:in_check?).with(any_args)
@@ -33,6 +34,9 @@ RSpec.describe Chess do
     context 'when it is an invalid move' do
       it 'raises IllegalMoveError' do
         allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
+        allow(board).to receive(:get_piece_at).with('b5').and_return(nil)
+        allow(board).to receive(:add_piece).with(any_args)
+        allow(board).to receive(:in_check?).with(any_args).and_return(false)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b5').and_return(false)
         expect { chess.add_move('a1', 'b5') }.to raise_error(IllegalMoveError)
       end
@@ -48,23 +52,6 @@ RSpec.describe Chess do
 
     before :each do
       allow(white_pawn).to receive(:color).and_return('white')
-    end
-
-    context 'when the move is invalid' do
-      it 'raises IllegalMoveError' do
-        allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
-        allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b5').and_return(false)
-        expect { chess.validate_move('a1', 'b5') }.to raise_error(IllegalMoveError)
-      end
-    end
-
-    context 'when its black s turn and moves a white piece' do
-      it 'raises IllegalMoveError' do
-        chess.switch_turn
-        allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
-        allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b5').and_return(false)
-        expect { chess.validate_move('a1', 'a3') }.to raise_error(IllegalMoveError)
-      end
     end
 
     context 'when the move puts in check own king' do

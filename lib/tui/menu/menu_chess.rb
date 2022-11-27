@@ -27,6 +27,7 @@ class MenuChess
       surround_spaces = ' ' * ((@window.maxx - name_length - 2) / 2)
       aditional_space = name_length.odd? ? ' ' : ''
       @window.setpos(index + 1, 1)
+      # Highlight selected option
       @window.attrset(index == @active_index ? A_STANDOUT : A_NORMAL)
       @window.addstr("#{surround_spaces}#{element.name}#{surround_spaces}#{aditional_space}")
     end

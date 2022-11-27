@@ -13,7 +13,6 @@ class Pawn < Piece
     # +2 ranks on first move
     # [-1, 1] and [1, 1] only when capturing
 
-    # TODO: use direction instead, with 1 depth?
     white = color == 'white'
     @posible_moves = white ? [[1, 0], [2, 0]] : [[-1, 0], [-2, 0]]
     @posibles_captures = white ? [[1, 1], [1, -1]] : [[-1, 1], [-1, -1]]
