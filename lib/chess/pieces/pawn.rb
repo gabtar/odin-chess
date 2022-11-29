@@ -31,13 +31,11 @@ class Pawn < Piece
     return false if same_color?(target_piece)
 
     # Check if there is a piece of oposite color
-    # TODO, check en passant
     if target_piece && target_piece.color != color
       return true if @posibles_captures.include?(board.calculate_distance_vector(from, to))
     else
       # Check displacement
       distance = board.calculate_distance_vector(from, to)
-      # TODO, check also for black, refactor!
       return false if distance == [2, 0] && from_rank != 1
       return true if @posible_moves.include?(distance) && !board.blocked_path?(from, to)
     end

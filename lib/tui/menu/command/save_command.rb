@@ -23,10 +23,9 @@ class SaveCommand
     @window.refresh
     sleep(1)
 
-    # TODO switch menu again
+    # TODO: switch menu again
   end
 
-  # TODO, I should make a module for this and EnterMoveCommand with this function
   # Gets input from user
   # @attr message [String] the message to be displayed to the user
   def input_move(message)

@@ -5,8 +5,8 @@ require_relative './move'
 # A castle move in chess
 class CastleMove < Move
   def validate
-    # TODO, check king sqaures are not attacked by opponent pieces
-    # Use #path_attacked? method in board
+    opponent_army = @from_piece.color == 'white' ? 'black' : 'white'
+    raise IllegalMoveError, 'Invalid move' if @board.path_attacked?(@from, @to, opponent_army)
   end
 
   # Performs the move in the board

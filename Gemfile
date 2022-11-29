@@ -10,4 +10,4 @@ gem 'simplecov', require: false, group: :test
 
 gem 'ruby_deep_clone', '~> 0.8.0'
 
-gem "curses", "~> 1.4"
+gem 'curses', '~> 1.4'

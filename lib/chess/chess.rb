@@ -12,6 +12,10 @@ require_relative './board/board'
 require_relative './player'
 require_relative './moves/move_creator'
 require_relative './errors/illegal_move'
+require_relative './moves/normal_move'
+require_relative './moves/castle_move'
+require_relative './moves/capture_move'
+require_relative './moves/promotion_move'
 
 # Main class for a chess game
 #
@@ -36,7 +40,7 @@ class Chess
   # @param to [String] the destination square
   def add_move(from, to)
     validate_move(from, to)
-    move = createMove(from, to, @board)
+    move = create_move(from, to, @board)
     move.validate
     move.execute
     @moves_list << move
@@ -46,7 +50,6 @@ class Chess
   # Validates if the passed move +from+ square +to+ square is a legal chess move
   # @param from [String] the starting square
   # @param to [String] the destination square
-  # TODO, must validate for castle and en passant moves
   def validate_move(from, to)
     # move = Move.new(from, to, @board)
     #
@@ -55,7 +58,7 @@ class Chess
     # # TODO validate with move types?
     # raise IllegalMoveError.new('Illegal piece move') unless piece_to_move.can_move_to?(@board, from, to)
 
-    raise IllegalMoveError.new('Cannot put king in check') if will_put_my_king_in_check(from, to)
+    raise IllegalMoveError, 'Cannot put king in check' if will_put_my_king_in_check(from, to)
   end
 
   # Toggles the current player turn to move
@@ -89,7 +92,7 @@ class Chess
 
           begin
             validate_move(from, to)
-            move = createMove(from, to, @board)
+            move = create_move(from, to, @board)
             move.validate
             return false
           rescue IllegalMoveError
@@ -105,7 +108,8 @@ class Chess
   # Loads a chess game previously saved
   # @param yaml_string [String] the string representing the object saved with YAML.dump()
   def self.unserialize(yaml_string)
-    YAML.safe_load(yaml_string, permitted_classes: [Chess, Board, Move ,Player, Pawn, Knight, Rook, Bishop, King, Queen])
+    YAML.safe_load(yaml_string,
+                   permitted_classes: [Chess, Board, Move, Player, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove], aliases: true)
   end
 
   private
@@ -123,6 +127,4 @@ class Chess
 
     board_clone.in_check?(from_piece.color)
   end
-
-  # TODO valid special moves -> castle, promotion and others
 end

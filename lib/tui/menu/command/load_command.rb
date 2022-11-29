@@ -20,7 +20,7 @@ class LoadCommand
     file = File.readlines("#{saves_path}/#{name}").join
     @game.load_game(file)
     # Re swtiches the menus again
-    # If no games found 
+    # If no games found
     @switch_menu_command.execute
   end
 end

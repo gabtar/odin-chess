@@ -159,4 +159,95 @@ RSpec.describe Chess do
       end
     end
   end
+
+  # Tests for MoveCreator module/mixin
+  describe '#promotion?' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { instance_double('Board') }
+    let(:pawn) { instance_double('Pawn') }
+
+    context 'when a pawn is going to promotion in next move' do
+      it 'returns true' do
+        allow(board).to receive(:get_piece_at).with('e7').and_return(pawn)
+        allow(pawn).to receive(:color).and_return('white')
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
+        expect(chess.promotion?('e7', 'e8', board)).to be_truthy
+      end
+    end
+
+    context 'when a black pawn is not going to promotion in next move' do
+      it 'returns false' do
+        allow(board).to receive(:get_piece_at).with('e3').and_return(pawn)
+        allow(pawn).to receive(:color).and_return('black')
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
+        expect(chess.promotion?('e3', 'e2', board)).to be_falsy
+      end
+    end
+  end
+
+  describe '#capture?' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { instance_double('Board') }
+    let(:pawn) { instance_double('Pawn') }
+    let(:rook) { instance_double('Rook') }
+
+    context 'when is a capture move' do
+      it 'returns true' do
+        allow(board).to receive(:get_piece_at).with('a5').and_return(pawn)
+        allow(board).to receive(:get_piece_at).with('a2').and_return(rook)
+        allow(pawn).to receive(:color).and_return('white')
+        allow(rook).to receive(:color).and_return('black')
+        expect(chess.capture?('a2', 'a5', board)).to be_truthy
+      end
+    end
+
+    context 'when is not capture move' do
+      it 'returns false' do
+        allow(board).to receive(:get_piece_at).with('a5').and_return(nil)
+        allow(board).to receive(:get_piece_at).with('a2').and_return(rook)
+        allow(pawn).to receive(:color).and_return('white')
+        allow(rook).to receive(:color).and_return('black')
+        expect(chess.capture?('a2', 'a5', board)).to be_falsy
+      end
+    end
+  end
+
+  context '#en_passant?' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { instance_double('Board') }
+    let(:pawn) { instance_double('Pawn') }
+
+    context 'when its an en passant pawn move' do
+      it 'returns true' do
+        allow(board).to receive(:get_piece_at).with('d5').and_return(pawn)
+        allow(pawn).to receive(:color).and_return('white')
+        allow(board).to receive(:calculate_distance_vector).with('d5', 'e6').and_return([1, 1])
+        expect(chess.en_passant?('d5', 'e6', board)).to be_truthy
+      end
+    end
+
+    context 'when its not an en passant pawn move' do
+      it 'returns false' do
+        allow(board).to receive(:get_piece_at).with('d3').and_return(pawn)
+        allow(pawn).to receive(:color).and_return('black')
+        allow(board).to receive(:calculate_distance_vector).with('d3', 'e2').and_return([1, -1])
+        expect(chess.en_passant?('d3', 'e2', board)).to be_falsy
+      end
+    end
+
+    context 'when its an en passant pawn move for black' do
+      it 'returns true' do
+        allow(board).to receive(:get_piece_at).with('d4').and_return(pawn)
+        allow(pawn).to receive(:color).and_return('black')
+        allow(board).to receive(:calculate_distance_vector).with('d4', 'e3').and_return([1, -1])
+        expect(chess.en_passant?('d4', 'e3', board)).to be_truthy
+      end
+    end
+  end
 end

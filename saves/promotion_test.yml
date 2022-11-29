@@ -1,0 +1,585 @@
+--- !ruby/object:Chess
+board: &1 !ruby/object:Board
+  squares:
+  - -
+    - !ruby/object:Knight
+      color: white
+      symbol: "♘"
+      possible_directions:
+      - - 2
+        - 1
+      - - 1
+        - 2
+      - - -1
+        - 2
+      - - -2
+        - 1
+      - - -2
+        - -1
+      - - -1
+        - -2
+      - - 1
+        - -2
+      - - 2
+        - -1
+    - !ruby/object:Bishop
+      color: white
+      symbol: "♗"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+    - !ruby/object:Queen
+      color: white
+      symbol: "♕"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+    - !ruby/object:King
+      color: white
+      symbol: "♔"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+    - !ruby/object:Bishop
+      color: white
+      symbol: "♗"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+    - !ruby/object:Knight
+      color: white
+      symbol: "♘"
+      possible_directions:
+      - - 2
+        - 1
+      - - 1
+        - 2
+      - - -1
+        - 2
+      - - -2
+        - 1
+      - - -2
+        - -1
+      - - -1
+        - -2
+      - - 1
+        - -2
+      - - 2
+        - -1
+    - !ruby/object:Rook
+      color: white
+      symbol: "♖"
+      possible_directions:
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+  - - &4 !ruby/object:Pawn
+      color: black
+      symbol: "♟"
+      posible_moves:
+      - - -1
+        - 0
+      - - -2
+        - 0
+      posibles_captures:
+      - - -1
+        - 1
+      - - -1
+        - -1
+    - !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+    - !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+    - !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+    - !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+    - !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+    - !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+    -
+  - -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+  - -
+    -
+    -
+    -
+    - &5 !ruby/object:Rook
+      color: white
+      symbol: "♖"
+      possible_directions:
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+    -
+    -
+    -
+  - -
+    - &2 !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+    -
+    -
+    - &6 !ruby/object:Pawn
+      color: black
+      symbol: "♟"
+      posible_moves:
+      - - -1
+        - 0
+      - - -2
+        - 0
+      posibles_captures:
+      - - -1
+        - 1
+      - - -1
+        - -1
+    -
+    -
+    - &7 !ruby/object:Pawn
+      color: white
+      symbol: "♙"
+      posible_moves:
+      - - 1
+        - 0
+      - - 2
+        - 0
+      posibles_captures:
+      - - 1
+        - 1
+      - - 1
+        - -1
+  - -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+  - -
+    -
+    - !ruby/object:Pawn
+      color: black
+      symbol: "♟"
+      posible_moves:
+      - - -1
+        - 0
+      - - -2
+        - 0
+      posibles_captures:
+      - - -1
+        - 1
+      - - -1
+        - -1
+    - !ruby/object:Pawn
+      color: black
+      symbol: "♟"
+      posible_moves:
+      - - -1
+        - 0
+      - - -2
+        - 0
+      posibles_captures:
+      - - -1
+        - 1
+      - - -1
+        - -1
+    -
+    - !ruby/object:Pawn
+      color: black
+      symbol: "♟"
+      posible_moves:
+      - - -1
+        - 0
+      - - -2
+        - 0
+      posibles_captures:
+      - - -1
+        - 1
+      - - -1
+        - -1
+    - !ruby/object:Pawn
+      color: black
+      symbol: "♟"
+      posible_moves:
+      - - -1
+        - 0
+      - - -2
+        - 0
+      posibles_captures:
+      - - -1
+        - 1
+      - - -1
+        - -1
+    - !ruby/object:Pawn
+      color: black
+      symbol: "♟"
+      posible_moves:
+      - - -1
+        - 0
+      - - -2
+        - 0
+      posibles_captures:
+      - - -1
+        - 1
+      - - -1
+        - -1
+  - - !ruby/object:Rook
+      color: black
+      symbol: "♜"
+      possible_directions:
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+    - !ruby/object:Knight
+      color: black
+      symbol: "♞"
+      possible_directions:
+      - - 2
+        - 1
+      - - 1
+        - 2
+      - - -1
+        - 2
+      - - -2
+        - 1
+      - - -2
+        - -1
+      - - -1
+        - -2
+      - - 1
+        - -2
+      - - 2
+        - -1
+    - !ruby/object:Bishop
+      color: black
+      symbol: "♝"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+    - !ruby/object:Queen
+      color: black
+      symbol: "♛"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+    - !ruby/object:King
+      color: black
+      symbol: "♚"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+    - !ruby/object:Bishop
+      color: black
+      symbol: "♝"
+      possible_directions:
+      - - 1
+        - 1
+      - - -1
+        - 1
+      - - -1
+        - -1
+      - - 1
+        - -1
+    - !ruby/object:Knight
+      color: black
+      symbol: "♞"
+      possible_directions:
+      - - 2
+        - 1
+      - - 1
+        - 2
+      - - -1
+        - 2
+      - - -2
+        - 1
+      - - -2
+        - -1
+      - - -1
+        - -2
+      - - 1
+        - -2
+      - - 2
+        - -1
+    - !ruby/object:Rook
+      color: black
+      symbol: "♜"
+      possible_directions:
+      - - 1
+        - 0
+      - - -1
+        - 0
+      - - 0
+        - 1
+      - - 0
+        - -1
+moves_list:
+- !ruby/object:NormalMove
+  from: a2
+  to: a4
+  board: *1
+  from_piece: *2
+  to_piece:
+- !ruby/object:NormalMove
+  from: b7
+  to: b5
+  board: *1
+  from_piece: &3 !ruby/object:Pawn
+    color: black
+    symbol: "♟"
+    posible_moves:
+    - - -1
+      - 0
+    - - -2
+      - 0
+    posibles_captures:
+    - - -1
+      - 1
+    - - -1
+      - -1
+  to_piece:
+- !ruby/object:CaptureMove
+  from: a4
+  to: b5
+  board: *1
+  from_piece: *2
+  to_piece: *3
+- !ruby/object:NormalMove
+  from: a7
+  to: a5
+  board: *1
+  from_piece: *4
+  to_piece:
+- !ruby/object:NormalMove
+  from: a1
+  to: a4
+  board: *1
+  from_piece: *5
+  to_piece:
+- !ruby/object:NormalMove
+  from: e7
+  to: e5
+  board: *1
+  from_piece: *6
+  to_piece:
+- !ruby/object:NormalMove
+  from: a4
+  to: e4
+  board: *1
+  from_piece: *5
+  to_piece:
+- !ruby/object:NormalMove
+  from: a5
+  to: a4
+  board: *1
+  from_piece: *4
+  to_piece:
+- !ruby/object:NormalMove
+  from: h2
+  to: h3
+  board: *1
+  from_piece: *7
+  to_piece:
+- !ruby/object:NormalMove
+  from: a4
+  to: a3
+  board: *1
+  from_piece: *4
+  to_piece:
+- !ruby/object:NormalMove
+  from: h3
+  to: h4
+  board: *1
+  from_piece: *7
+  to_piece:
+- !ruby/object:NormalMove
+  from: a3
+  to: a2
+  board: *1
+  from_piece: *4
+  to_piece:
+- !ruby/object:NormalMove
+  from: h4
+  to: h5
+  board: *1
+  from_piece: *7
+  to_piece:
+white_player: !ruby/object:Player
+  colour: white
+  captured_pieces: []
+black_player: !ruby/object:Player
+  colour: black
+  captured_pieces: []
+turn: black

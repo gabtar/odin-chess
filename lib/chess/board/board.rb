@@ -96,7 +96,8 @@ class Board
 
     until current_square == to
       @squares.flatten.each do |piece|
-        return true if !piece.nil? && piece.color != army && piece.can_move_to?(self, get_coordinate(piece), current_square)
+        return true if !piece.nil? && piece.color != army && piece.can_move_to?(self, get_coordinate(piece),
+                                                                                current_square)
       end
       current_square = next_square(current_square, direction)
     end

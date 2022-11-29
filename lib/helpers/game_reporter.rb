@@ -2,7 +2,6 @@
 
 # Helper funtions for TUI
 module GameReporter
-
   # Retunrs an string with the board, captured pieces, player to move and other game status
   # @attr board [Game] the board with the current position of the game
   def board_status(game)
@@ -29,7 +28,7 @@ module GameReporter
     moves_str += "------------\n"
     move_number = 1
     game.moves_list.each_slice(2) do |move|
-      move_list = move.map { |m| m.long_algebraic_notation }
+      move_list = move.map(&:long_algebraic_notation)
       moves_str += "#{move_number}. #{move_list}\n"
       move_number += 1
     end

@@ -14,7 +14,6 @@ class NewGameCommand
   end
 
   # Switches to a new game menu
-  # TODO should also create an empty game in current Game class
   def execute
     @menu.options = @submenu.options
     @menu.max_items = @submenu.options.length - 1

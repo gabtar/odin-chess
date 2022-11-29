@@ -21,7 +21,7 @@ class EnterMoveCommand
 
     begin
       @game.add_move(from, to)
-    rescue => e
+    rescue StandardError => e
       display_message(e.message)
       @window.refresh
       sleep(1)
@@ -43,6 +43,9 @@ class EnterMoveCommand
   def input_move(message)
     display_message(message)
     Curses.curs_set(1) # Show cursor
+
+    # TODO: check promotion and make a new submenu to select piece
+
     @window.keypad(false)
     input = ''
     while (ch = @window.getch)

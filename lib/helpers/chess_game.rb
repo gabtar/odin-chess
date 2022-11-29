@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Wrapper for the chess game object for handling games in the TUI
 class ChessGame
   attr_accessor :current_game
