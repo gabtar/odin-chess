@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require_relative '../../../chess/moves/move_creator'
 # Command to enter a move to the game
 #
 # @attr game [Chess] the current Chess game object
 # @attr window [Window] a Curses.Window object where the command will be rendered
 class EnterMoveCommand
+  include MoveCreator
+
   attr_reader :name
 
   def initialize(game, window)
@@ -20,7 +23,25 @@ class EnterMoveCommand
     Curses.curs_set(0) # Hide cursor
 
     begin
-      @game.add_move(from, to)
+      piece = nil
+      if promotion?(from, to, @game.current_game.board)
+        while !%w[Q R N B].include?(piece)
+          piece = input_move('Promote to(Q/R/N/B): ')
+        end
+        case piece
+        when 'Q'
+          piece = Queen.new(@game.current_game.turn)
+        when 'R'
+          piece = Rook.new(@game.current_game.turn)
+        when 'B'
+          piece = Bishop.new(@game.current_game.turn)
+        when 'N'
+          piece = Knight.new(@game.current_game.turn)
+        end
+      end
+      move = create_move(from, to, @game.current_game.board, piece)
+
+      @game.add_move(move)
     rescue StandardError => e
       display_message(e.message)
       @window.refresh
@@ -43,8 +64,6 @@ class EnterMoveCommand
   def input_move(message)
     display_message(message)
     Curses.curs_set(1) # Show cursor
-
-    # TODO: check promotion and make a new submenu to select piece
 
     @window.keypad(false)
     input = ''

@@ -23,6 +23,7 @@ require_relative './moves/promotion_move'
 # @attr white_player [Player] player asociated with the white army
 # @attr black_player [Player] player asociated with the black army
 class Chess
+  # TODO, Only needed for tests now
   include MoveCreator
 
   attr_reader :moves_list, :turn, :board
@@ -36,11 +37,9 @@ class Chess
   end
 
   # Adds a valid move to the current game and updates the game status
-  # @param from [String] the starting square
-  # @param to [String] the destination square
-  def add_move(from, to)
-    validate_move(from, to)
-    move = create_move(from, to, @board)
+  # @attr move [Move] the move we want to add to the current game
+  def add_move(move)
+    validate_move(move.from, move.to)
     move.validate
     move.execute
     @moves_list << move

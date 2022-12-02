@@ -11,7 +11,7 @@ RSpec.describe PromotionMove do
       it 'moves the pawn in the board from e7 to e8 and converts to Queen' do
         board.add_piece(white_pawn, 'e7')
         allow(white_pawn).to receive(:color).and_return('white')
-        move = PromotionMove.new('e7', 'e8', board, nil)
+        move = PromotionMove.new('e7', 'e8', board, Queen.new('white'))
         move.execute
         expect(board.get_piece_at('e8')).to be_a_kind_of(Queen)
       end
@@ -26,7 +26,7 @@ RSpec.describe PromotionMove do
       it 'returns d2d1Q' do
         board.add_piece(pawn, 'd2')
         allow(pawn).to receive(:color).and_return('black')
-        move = PromotionMove.new('d2', 'd1', board, nil)
+        move = PromotionMove.new('d2', 'd1', board, Queen.new('black'))
         expect(move.long_algebraic_notation).to eq("#{pawn}d2d1♛")
       end
     end

@@ -22,10 +22,9 @@ class ChessGame
   end
 
   # Make a move +from+ origin square +to+ destination sqaure in the current game instance
-  # @attr from [String] the starting square coordinate
-  # @attr to [String] the ending square coordinate
-  def add_move(from, to)
-    @current_game.add_move(from, to)
+  # @attr move [Move] the move we want to add to the current game
+  def add_move(move)
+    @current_game.add_move(move)
   end
 
   # Serializes the current game instance into a yaml string

@@ -20,25 +20,29 @@ RSpec.describe Chess do
     end
 
     context 'when it is a valid move' do
+      let(:move) { NormalMove.new('a1', 'b2', board) }
+
       it 'it adds the move to the game' do
         allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).exactly(3).times.with('b2').and_return(nil)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b2').and_return(true)
         allow(board).to receive(:add_piece).with(any_args)
         allow(board).to receive(:in_check?).with(any_args)
-        chess.add_move('a1', 'b2')
+        chess.add_move(move)
         expect(chess.moves_list).to have_attributes(size: (be > 0))
       end
     end
 
     context 'when it is an invalid move' do
+      let(:move) { NormalMove.new('a1', 'b5', board) }
+
       it 'raises IllegalMoveError' do
         allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('b5').and_return(nil)
         allow(board).to receive(:add_piece).with(any_args)
         allow(board).to receive(:in_check?).with(any_args).and_return(false)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b5').and_return(false)
-        expect { chess.add_move('a1', 'b5') }.to raise_error(IllegalMoveError)
+        expect { chess.add_move(move) }.to raise_error(IllegalMoveError)
       end
     end
   end
@@ -59,12 +63,13 @@ RSpec.describe Chess do
         white_player = Player.new('white')
         black_player = Player.new('black')
         test_board = Board.new
+        move = NormalMove.new('a1', 'b2', test_board)
         test_board.add_piece(King.new('white'), 'a1')
         test_board.add_piece(Pawn.new('white'), 'b2')
         test_board.add_piece(Bishop.new('black'), 'h8')
         test_chess = Chess.new(test_board, white_player, black_player)
 
-        expect { test_chess.add_move('b2', 'b4') }.to raise_error(IllegalMoveError)
+        expect { test_chess.add_move(move) }.to raise_error(IllegalMoveError)
       end
     end
   end

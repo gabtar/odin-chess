@@ -4,10 +4,10 @@ require_relative './move'
 
 # A normal/piece movement in chess
 class PromotionMove < Move
-  def initialize(from, to, board, _promoted_to)
+  def initialize(from, to, board, promoted_to)
     super(from, to, board)
     # TODO, hardcode for now
-    @promoted_to = Queen.new(@from_piece.color)
+    @promoted_to = promoted_to
   end
 
   def validate

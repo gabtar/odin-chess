@@ -80,7 +80,6 @@ class GameTUI
       moves.box('|', '-')
 
       # Render initial screen
-      # draw_multiline_string(@game.current_game.board.to_s, board)
       draw_multiline_string(board_status(@game.current_game), board)
       draw_multiline_string(moves_status(@game.current_game), moves, false)
 
