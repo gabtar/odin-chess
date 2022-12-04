@@ -16,6 +16,8 @@ require_relative './moves/normal_move'
 require_relative './moves/castle_move'
 require_relative './moves/capture_move'
 require_relative './moves/promotion_move'
+require_relative './moves/first_pawn_move'
+require_relative './moves/en_passant_move'
 
 # Main class for a chess game
 #
@@ -43,6 +45,7 @@ class Chess
     move.validate
     move.execute
     @moves_list << move
+    @board.last_move = move
     switch_turn
   end
 
@@ -108,7 +111,7 @@ class Chess
   # @param yaml_string [String] the string representing the object saved with YAML.dump()
   def self.unserialize(yaml_string)
     YAML.safe_load(yaml_string,
-                   permitted_classes: [Chess, Board, Move, Player, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove], aliases: true)
+                   permitted_classes: [Chess, Board, Move, Player, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove, FirstPawnMove, EnPassantMove], aliases: true)
   end
 
   private

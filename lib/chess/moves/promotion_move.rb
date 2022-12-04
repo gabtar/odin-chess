@@ -2,11 +2,15 @@
 
 require_relative './move'
 
-# A normal/piece movement in chess
+# A promotion move
+#
+# @attr from [String] the starting position sqaure
+# @attr to [String] the ending position square
+# @attr board [Board] the board with the position before the move
+# @attr board [Piece] the piece that the pawn will be promoted to
 class PromotionMove < Move
   def initialize(from, to, board, promoted_to)
     super(from, to, board)
-    # TODO, hardcode for now
     @promoted_to = promoted_to
   end
 

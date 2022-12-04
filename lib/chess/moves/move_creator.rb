@@ -3,6 +3,7 @@
 require_relative './normal_move'
 require_relative './castle_move'
 require_relative './capture_move'
+require_relative './first_pawn_move'
 require_relative './promotion_move'
 
 # Module for making moves objects depending on coordinates and board passed
@@ -18,6 +19,10 @@ module MoveCreator
     return CaptureMove.new(from, to, board) if capture?(from, to, board)
 
     return PromotionMove.new(from, to, board, piece) if promotion?(from, to, board)
+
+    return FirstPawnMove.new(from, to, board) if first_pawn_move?(from, to, board)
+
+    return EnPassantMove.new(from, to, board) if en_passant?(from, to, board)
 
     # TODO, if from piece.nil? -> Raise IllegalMoveError?
     NormalMove.new(from, to, board)
@@ -57,32 +62,25 @@ module MoveCreator
     !board.get_piece_at(to).nil? && board.get_piece_at(from).color != board.get_piece_at(to).color
   end
 
+  # Detects if it's a first move for a pawn
+  # @attr from [String] the starting position sqaure
+  # @attr to [String] the ending position square
+  # @attr board [Board] the board with the position before the move
+  def first_pawn_move?(from, to, board)
+    return true if board.get_piece_at(from).is_a?(Pawn) && [[2, 0], [-2, 0]].include?(board.calculate_distance_vector(from, to))
+
+    false
+  end
+
   # Detects if it's an en passant pawn move
   # @attr from [String] the starting position sqaure
   # @attr to [String] the ending position square
   # @attr board [Board] the board with the position before the move
   def en_passant?(from, to, board)
     en_passant_distance = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
-    from_piece = board.get_piece_at(from)
 
-    # For white
-    if from_piece.color == 'white' && from[1] == '5' && en_passant_distance.include?(@board.calculate_distance_vector(
-                                                                                       from, to
-                                                                                     ))
-
-      return true
-    end
-
-    # For black
-    if from_piece.color == 'black' && from[1] == '4' && en_passant_distance.include?(@board.calculate_distance_vector(
-                                                                                       from, to
-                                                                                     ))
-
-      return true
-    end
+    return true if en_passant_distance.include?(board.calculate_distance_vector(from,to)) && board.last_move.is_a?(FirstPawnMove)
 
     false
   end
-
-  # TODO, add FirstPawnMove Type
 end

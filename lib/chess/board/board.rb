@@ -8,6 +8,7 @@ require_relative '../errors/illegal_move'
 # @attr squares [Array] Squares of the chess board
 class Board
   attr_reader :squares
+  attr_accessor :last_move
 
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
