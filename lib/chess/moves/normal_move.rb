@@ -6,7 +6,9 @@ require_relative './move'
 class NormalMove < Move
   def validate
     raise IllegalMoveError, 'Illegal piece move' unless @from_piece.can_move_to?(@board, @from, @to)
-    # raise IllegalMoveError.new('Cannot put king in check') if will_put_my_king_in_check(@from, @to)
+    raise IllegalMoveError, 'Path blocked' if !@from_piece.is_a?(Knight) && @board.blocked_path?(@from, @to)
+    # Same color piece on destination
+    raise IllegalMoveError, 'Path blocked' unless @to_piece.nil?
   end
 
   # Performs the move in the board

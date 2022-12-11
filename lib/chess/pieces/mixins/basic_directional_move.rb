@@ -9,19 +9,9 @@ module BasicDirectionalMove
   # @param from [String] the starting square coordinate
   # @param to [String] the destination square coordinate
   def can_move_to?(board, from, to)
-    move_direction = [0, 0]
-    begin
-      move_direction = board.calculate_direction_vector(from, to)
-    rescue IllegalMoveError
-      return false
-    end
-
-    blocked_by_same_color = same_color?(board.get_piece_at(to))
-
-    return true if @possible_directions.include?(move_direction) &&
-                   !board.blocked_path?(from, to) &&
-                   !blocked_by_same_color
-
+    move_direction = board.calculate_direction_vector(from, to)
+    @possible_directions.include?(move_direction)
+  rescue IllegalMoveError
     false
   end
 end

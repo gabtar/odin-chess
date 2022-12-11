@@ -4,9 +4,15 @@ require_relative './move'
 
 # A move when a Pawn is moved 2 squares ahead
 class FirstPawnMove < Move
+  def initialize(from, to, board)
+    super(from, to, board)
+    @pawn_color = @from_piece.color
+  end
+
   def validate
-    # TODO, need to check if from rank 2 or 7 for black
-    # And extract the logic from can_move_to
+    raise IllegalMoveError, 'Illegal piece move' if @pawn_color == 'white' && @from[1] != '2'
+    raise IllegalMoveError, 'Illegal piece move' if @pawn_color == 'black' && @from[1] != '7'
+
     raise IllegalMoveError, 'Illegal piece move' unless @from_piece.can_move_to?(@board, @from,
                                                                                  @to) || @to_piece.color == @from_piece.color
   end

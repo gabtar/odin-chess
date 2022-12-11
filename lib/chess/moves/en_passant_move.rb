@@ -6,8 +6,6 @@ require_relative './move'
 class EnPassantMove < Move
   def validate
     raise IllegalMoveError, 'Illegal capture' unless @board.last_move.is_a?(FirstPawnMove)
-    #
-    # # TODO, Validate that first_pawn_move is to the side we are capturing
     raise IllegalMoveError, 'Illegal capture' if @board.last_move.to[0] != @to[0]
   end
 

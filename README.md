@@ -2,7 +2,8 @@
 
 - [x] Add FirstPawn move support
 - [x] En passant move support
-- [ ] Refactors for validations in pieces(no longer needed now)
+- [x] Refactors for validations in pieces(no longer needed now)
+- [ ] End game when checkmate
 - [ ] Fixes in curses UI
 - [ ] Support for Stealmate(draw)
 - [ ] Three time repetition rule(draw)

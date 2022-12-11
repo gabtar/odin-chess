@@ -160,51 +160,6 @@ RSpec.describe Board do
     end
   end
 
-  describe '#in_check?' do
-    subject(:board) { described_class.new }
-    let(:king) { instance_double(King) }
-
-    context 'when the white king is not in check' do
-      it 'returns false' do
-        allow(king).to receive(:color).and_return('white')
-        allow(king).to receive(:is_a?).and_return(King)
-        allow(king).to receive(:can_move_to?).with(any_args).and_return(false)
-        board.add_piece(king, 'a1')
-        expect(board.in_check?('white')).to be_falsy
-      end
-    end
-
-    context 'when the white king is in check' do
-      let(:bishop) { instance_double(Bishop) }
-
-      it 'returns true' do
-        allow(king).to receive(:color).and_return('white')
-        allow(king).to receive(:is_a?).and_return(King)
-        allow(king).to receive(:can_move_to?).with(any_args).and_return(false)
-        allow(bishop).to receive(:color).and_return('black')
-        allow(bishop).to receive(:can_move_to?).with(any_args).and_return(true)
-        board.add_piece(king, 'a1')
-        board.add_piece(bishop, 'h8')
-        expect(board.in_check?('white')).to be_truthy
-      end
-    end
-
-    context 'when the black king is not in check' do
-      let(:bishop) { instance_double(Bishop) }
-
-      it 'returns false' do
-        allow(king).to receive(:color).and_return('white')
-        allow(king).to receive(:is_a?).and_return(King)
-        allow(king).to receive(:can_move_to?).with(any_args).and_return(false)
-        allow(bishop).to receive(:color).and_return('white')
-        allow(bishop).to receive(:can_move_to?).with(any_args).and_return(true)
-        board.add_piece(king, 'a1')
-        board.add_piece(bishop, 'h8')
-        expect(board.in_check?('white')).to be_falsy
-      end
-    end
-  end
-
   describe '#path_attacked?' do
     subject(:board) { described_class.new }
     let(:bishop) { instance_double(Bishop) }

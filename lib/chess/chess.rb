@@ -41,8 +41,8 @@ class Chess
   # Adds a valid move to the current game and updates the game status
   # @attr move [Move] the move we want to add to the current game
   def add_move(move)
-    validate_move(move.from, move.to)
     move.validate
+    validate_move(move.from, move.to)
     move.execute
     @moves_list << move
     @board.last_move = move
@@ -53,13 +53,9 @@ class Chess
   # @param from [String] the starting square
   # @param to [String] the destination square
   def validate_move(from, to)
-    # move = Move.new(from, to, @board)
-    #
-    # raise IllegalMoveError.new('Invalid piece') if piece_to_move.nil? || piece_to_move.color != @turn
-    # #
-    # # TODO validate with move types?
-    # raise IllegalMoveError.new('Illegal piece move') unless piece_to_move.can_move_to?(@board, from, to)
+    piece_to_move = @board.get_piece_at(from)
 
+    raise IllegalMoveError, 'Invalid piece' if piece_to_move.nil? || piece_to_move.color != @turn
     raise IllegalMoveError, 'Cannot put king in check' if will_put_my_king_in_check(from, to)
   end
 
@@ -76,25 +72,25 @@ class Chess
 
   # Checks if the current player is in checkmate
   # @return [Boolean]
-  def checkmate?
+  def checkmate?(board, army)
     checkmate = false
-    if @board.in_check?(@turn)
-      checkmate = true
+    if in_check?(board, army)
       coordinates = []
       8.times do |number|
         coordinates << ('a'..'h').to_a.map! { |rank| rank + (number + 1).to_s }
       end
       coordinates.flatten.each do |from|
-        piece = @board.get_piece_at(from)
+        piece = board.get_piece_at(from)
 
-        next if piece.nil? || piece.color != @turn
+        next if piece.nil? || piece.color != army
 
         coordinates.flatten.each do |to|
           next if from == to
 
+          # TODO, if queening
+          move = create_move(from, to, board)
           begin
             validate_move(from, to)
-            move = create_move(from, to, @board)
             move.validate
             return false
           rescue IllegalMoveError
@@ -114,6 +110,34 @@ class Chess
                    permitted_classes: [Chess, Board, Move, Player, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove, FirstPawnMove, EnPassantMove], aliases: true)
   end
 
+  # Validates if the passed colour if current player is in check or not in the current position
+  # @param army [String] the colour of the side we want to know if it's in check
+  # @return [Boolean] true if its in check otherwise false
+  def in_check?(board, army)
+    board_clone = DeepClone.clone(board)
+    king = board_clone.squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
+
+    board_clone.squares.flatten.each do |piece|
+      next if piece.nil? || piece.color == army
+
+      # Look for a piece that is attacking the king
+      from = board_clone.get_coordinate(piece)
+      move = create_move(from, board_clone.get_coordinate(king), board_clone)
+
+      begin
+        # Found a move that can capture the king
+        move.validate
+        return true
+      rescue StandardError => e
+        # Its an invalid move, so as it cannot be performed, is not in check
+        # Continue looking for captures moves
+        next
+      end
+    end
+
+    false
+  end
+
   private
 
   # Validates that the passed move will not result in check for own King
@@ -122,11 +146,15 @@ class Chess
   # @return [Boolean] if the moves puts own king in check
   def will_put_my_king_in_check(from, to)
     board_clone = DeepClone.clone(@board)
-    from_piece = board_clone.get_piece_at(from)
 
-    board_clone.add_piece(nil, from)
-    board_clone.add_piece(from_piece, to)
-
-    board_clone.in_check?(from_piece.color)
+    move = create_move(from, to, board_clone)
+    begin
+      move.validate
+      move.execute
+      in_check?(board_clone, @turn)
+    rescue StandardError => e
+      # It's an Illegal move -> cannot be added, so return true for now
+      true
+    end
   end
 end

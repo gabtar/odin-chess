@@ -47,6 +47,8 @@ module MoveCreator
   # @attr board [Board] the board with the position before the move
   def promotion?(from, _to, board)
     from_piece = board.get_piece_at(from)
+    return false if from_piece.nil?
+
     return true if from_piece.color == 'white' && from_piece.is_a?(Pawn) && from[1] == '7'
 
     return true if from_piece.color == 'black' && from_piece.is_a?(Pawn) && from[1] == '2'
@@ -59,7 +61,7 @@ module MoveCreator
   # @attr to [String] the ending position square
   # @attr board [Board] the board with the position before the move
   def capture?(from, to, board)
-    !board.get_piece_at(to).nil? && board.get_piece_at(from).color != board.get_piece_at(to).color
+    !board.get_piece_at(to).nil? && !board.get_piece_at(from).nil? && board.get_piece_at(from).color != board.get_piece_at(to).color
   end
 
   # Detects if it's a first move for a pawn
@@ -67,7 +69,8 @@ module MoveCreator
   # @attr to [String] the ending position square
   # @attr board [Board] the board with the position before the move
   def first_pawn_move?(from, to, board)
-    return true if board.get_piece_at(from).is_a?(Pawn) && [[2, 0], [-2, 0]].include?(board.calculate_distance_vector(from, to))
+    return true if board.get_piece_at(from).is_a?(Pawn) && [[2, 0],
+                                                            [-2, 0]].include?(board.calculate_distance_vector(from, to))
 
     false
   end
@@ -79,7 +82,8 @@ module MoveCreator
   def en_passant?(from, to, board)
     en_passant_distance = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
 
-    return true if en_passant_distance.include?(board.calculate_distance_vector(from,to)) && board.last_move.is_a?(FirstPawnMove)
+    return true if en_passant_distance.include?(board.calculate_distance_vector(from,
+                                                                                to)) && board.last_move.is_a?(FirstPawnMove)
 
     false
   end

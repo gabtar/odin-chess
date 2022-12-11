@@ -18,15 +18,6 @@ RSpec.describe Knight do
       end
     end
 
-    context 'when going from f5 to h4 on with a pawn on h4' do
-      it 'returns false' do
-        allow(board).to receive(:calculate_distance_vector).with('f5', 'h4').and_return([2, 1])
-        allow(board).to receive(:get_piece_at).with('h4').and_return(black_pawn)
-        allow(black_pawn).to receive(:color).and_return('black')
-        expect(black_knight.can_move_to?(board, 'f5', 'h4')).to be_falsy
-      end
-    end
-
     context 'when capturing a pawn from a1 to c2' do
       let(:white_pawn) { instance_double(Pawn) }
 

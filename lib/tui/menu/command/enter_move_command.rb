@@ -25,9 +25,7 @@ class EnterMoveCommand
     begin
       piece = nil
       if promotion?(from, to, @game.current_game.board)
-        while !%w[Q R N B].include?(piece)
-          piece = input_move('Promote to(Q/R/N/B): ')
-        end
+        piece = input_move('Promote to(Q/R/N/B): ') until %w[Q R N B].include?(piece)
         case piece
         when 'Q'
           piece = Queen.new(@game.current_game.turn)

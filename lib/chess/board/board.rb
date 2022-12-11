@@ -32,8 +32,7 @@ class Board
     current_square = next_square(from, direction)
 
     until current_square == to
-      rank, file = parse_coordinate(current_square)
-      return true unless squares[rank][file].nil?
+      return true unless get_piece_at(current_square).nil?
 
       current_square = next_square(current_square, direction)
     end
@@ -63,27 +62,6 @@ class Board
     end
 
     distance_vector.map { |item| item.zero? ? 0 : item / item.abs }
-  end
-
-  # Validates if the passed colour is in check or not in the current position
-  # @param army [String] the colour of the side we want to know if it's in check
-  # @return [Boolean] true if its in check otherwise false
-  def in_check?(army)
-    king = @squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
-
-    king_coordinate = !king.nil? ? get_coordinate(king) : nil
-    # TODO, temporary fix for test
-    return false if king_coordinate.nil?
-
-    is_in_check = false
-    @squares.flatten.each do |piece|
-      if !piece.nil? && (piece.can_move_to?(self, get_coordinate(piece),
-                                            king_coordinate) && piece.color != king.color)
-        is_in_check = true
-      end
-    end
-
-    is_in_check
   end
 
   # Checks if the path +from+ square +to+ square is attacked by opposite army
@@ -142,6 +120,8 @@ class Board
 
     "#{(next_file + 97).chr}#{next_rank + 1}"
   end
+
+  public
 
   # Internal method for #in_check? that returns the cordinate or the pice or nil
   def get_coordinate(piece)

@@ -12,7 +12,7 @@ RSpec.describe Chess do
     subject(:chess) { described_class.new(board, white_player, black_player) }
     let(:white_player) { instance_double('Player') }
     let(:black_player) { instance_double('Player') }
-    let(:board) { instance_double('Board') }
+    let(:board) { Board.new }
     let(:white_pawn) { instance_double('Pawn') }
 
     before :each do
@@ -20,15 +20,11 @@ RSpec.describe Chess do
     end
 
     context 'when it is a valid move' do
-      let(:move) { NormalMove.new('a1', 'b2', board) }
+      let(:move) { NormalMove.new('a2', 'a3', board) }
 
       it 'it adds the move to the game' do
-        allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
-        allow(board).to receive(:get_piece_at).exactly(3).times.with('b2').and_return(nil)
-        allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b2').and_return(true)
-        allow(board).to receive(:add_piece).with(any_args)
-        allow(board).to receive(:in_check?).with(any_args)
-        allow(board).to receive(:last_move=).with(any_args)
+        board.add_piece(white_pawn, 'a2')
+        allow(white_pawn).to receive(:can_move_to?).with(any_args).and_return(true)
         chess.add_move(move)
         expect(chess.moves_list).to have_attributes(size: (be > 0))
       end
@@ -38,11 +34,8 @@ RSpec.describe Chess do
       let(:move) { NormalMove.new('a1', 'b5', board) }
 
       it 'raises IllegalMoveError' do
-        allow(board).to receive(:get_piece_at).with('a1').and_return(white_pawn)
-        allow(board).to receive(:get_piece_at).with('b5').and_return(nil)
-        allow(board).to receive(:add_piece).with(any_args)
-        allow(board).to receive(:in_check?).with(any_args).and_return(false)
-        allow(white_pawn).to receive(:can_move_to?).with(board, 'a1', 'b5').and_return(false)
+        board.add_piece(white_pawn, 'a1')
+        allow(white_pawn).to receive(:can_move_to?).with(any_args).and_return(false)
         expect { chess.add_move(move) }.to raise_error(IllegalMoveError)
       end
     end
@@ -64,10 +57,10 @@ RSpec.describe Chess do
         white_player = Player.new('white')
         black_player = Player.new('black')
         test_board = Board.new
-        move = NormalMove.new('a1', 'b2', test_board)
         test_board.add_piece(King.new('white'), 'a1')
         test_board.add_piece(Pawn.new('white'), 'b2')
         test_board.add_piece(Bishop.new('black'), 'h8')
+        move = NormalMove.new('b2', 'b3', test_board)
         test_chess = Chess.new(test_board, white_player, black_player)
 
         expect { test_chess.add_move(move) }.to raise_error(IllegalMoveError)
@@ -123,48 +116,48 @@ RSpec.describe Chess do
     end
   end
 
-  describe '#checkmate?' do
-    subject(:chess) { described_class.new(board, white_player, black_player) }
-    let(:white_player) { Player.new('white') }
-    let(:black_player) { Player.new('black') }
-    let(:board) { Board.new }
-
-    context 'when black is in checkmate' do
-      it 'returns true' do
-        board.add_piece(King.new('black'), 'a1')
-        board.add_piece(Rook.new('white'), 'h2')
-        board.add_piece(Rook.new('white'), 'h1')
-        chess.switch_turn
-
-        expect(chess.turn).to eq('black')
-        expect(chess.checkmate?).to be_truthy
-      end
-    end
-
-    context 'when black is not in checkmate' do
-      it 'returns false' do
-        board.add_piece(King.new('black'), 'a1')
-        board.add_piece(Rook.new('white'), 'h1')
-        chess.switch_turn
-
-        expect(chess.turn).to eq('black')
-        expect(chess.checkmate?).to be_falsy
-      end
-    end
-
-    context 'when a piece move can avoid the checkmate' do
-      it 'returns false' do
-        board.add_piece(King.new('black'), 'a1')
-        board.add_piece(Rook.new('white'), 'h2')
-        board.add_piece(Rook.new('white'), 'h1')
-        board.add_piece(Rook.new('black'), 'b8')
-        chess.switch_turn
-
-        expect(chess.turn).to eq('black')
-        expect(chess.checkmate?).to be_falsy
-      end
-    end
-  end
+  # describe '#checkmate?' do
+  #   subject(:chess) { described_class.new(board, white_player, black_player) }
+  #   let(:white_player) { Player.new('white') }
+  #   let(:black_player) { Player.new('black') }
+  #   let(:board) { Board.new }
+  #
+  #   context 'when black is in checkmate' do
+  #     it 'returns true' do
+  #       board.add_piece(King.new('black'), 'a1')
+  #       board.add_piece(Rook.new('white'), 'h2')
+  #       board.add_piece(Rook.new('white'), 'h1')
+  #       chess.switch_turn
+  #
+  #       expect(chess.turn).to eq('black')
+  #       expect(chess.checkmate?).to be_truthy
+  #     end
+  #   end
+  #
+  #   context 'when black is not in checkmate' do
+  #     it 'returns false' do
+  #       board.add_piece(King.new('black'), 'a1')
+  #       board.add_piece(Rook.new('white'), 'h1')
+  #       chess.switch_turn
+  #
+  #       expect(chess.turn).to eq('black')
+  #       expect(chess.checkmate?).to be_falsy
+  #     end
+  #   end
+  #
+  #   context 'when a piece move can avoid the checkmate' do
+  #     it 'returns false' do
+  #       board.add_piece(King.new('black'), 'a1')
+  #       board.add_piece(Rook.new('white'), 'h2')
+  #       board.add_piece(Rook.new('white'), 'h1')
+  #       board.add_piece(Rook.new('black'), 'b8')
+  #       chess.switch_turn
+  #
+  #       expect(chess.turn).to eq('black')
+  #       expect(chess.checkmate?).to be_falsy
+  #     end
+  #   end
+  # end
 
   # Tests for MoveCreator module/mixin
   describe '#promotion?' do
@@ -276,5 +269,39 @@ RSpec.describe Chess do
     #     expect(chess.en_passant?('d4', 'e3', board)).to be_truthy
     #   end
     # end
+  end
+
+  describe '#in_check?' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { Board.new }
+    let(:black_king) { King.new('black') }
+    let(:white_pawn) { Pawn.new('white') }
+    let(:white_bishop) { Bishop.new('white') }
+
+    context 'when the black king is not in check' do
+      it 'returns false' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(white_pawn, 'a8')
+        expect(chess.in_check?(chess.board, 'black')).to be_falsy
+      end
+    end
+
+    context 'when the black king is in check' do
+      it 'returns true' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(white_pawn, 'f7')
+        expect(chess.in_check?(chess.board, 'black')).to be_truthy
+      end
+    end
+
+    context 'when the black king is by a white bishop' do
+      it 'returns true' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(white_bishop, 'a4')
+        expect(chess.in_check?(chess.board, 'black')).to be_truthy
+      end
+    end
   end
 end

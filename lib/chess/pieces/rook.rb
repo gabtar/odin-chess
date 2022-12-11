@@ -8,7 +8,6 @@ require_relative './mixins/basic_directional_move'
 # @attr [String] color piece color(eg. black or white)
 class Rook < Piece
   include BasicDirectionalMove
-  attr_accessor :possible_directions
 
   def initialize(color)
     symbol = color == 'white' ? '♖' : '♜'
