@@ -4,6 +4,7 @@ require_relative './normal_move'
 require_relative './castle_move'
 require_relative './capture_move'
 require_relative './first_pawn_move'
+require_relative './pawn_capture_move'
 require_relative './promotion_move'
 
 # Module for making moves objects depending on coordinates and board passed
@@ -16,13 +17,15 @@ module MoveCreator
   def create_move(from, to, board, piece = nil)
     return CastleMove.new(from, to, board) if castle?(from, to, board)
 
+    return EnPassantMove.new(from, to, board) if en_passant?(from, to, board)
+
+    return PawnCaptureMove.new(from, to, board) if pawn_capture?(from, to, board)
+
     return CaptureMove.new(from, to, board) if capture?(from, to, board)
 
     return PromotionMove.new(from, to, board, piece) if promotion?(from, to, board)
 
     return FirstPawnMove.new(from, to, board) if first_pawn_move?(from, to, board)
-
-    return EnPassantMove.new(from, to, board) if en_passant?(from, to, board)
 
     # TODO, if from piece.nil? -> Raise IllegalMoveError?
     NormalMove.new(from, to, board)
@@ -54,6 +57,16 @@ module MoveCreator
     return true if from_piece.color == 'black' && from_piece.is_a?(Pawn) && from[1] == '2'
 
     false
+  end
+
+  # Detects if it's a Pawn capture move(captures in a diferent direction)
+  # @attr from [String] the starting position sqaure
+  # @attr to [String] the ending position square
+  # @attr board [Board] the board with the position before the move
+  def pawn_capture?(from, to, board)
+    pawn_capture_distances = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+
+    board.get_piece_at(from).is_a?(Pawn) && !board.get_piece_at(to).nil? && pawn_capture_distances.include?(board.calculate_distance_vector(from, to))
   end
 
   # Detects if it's a capture move

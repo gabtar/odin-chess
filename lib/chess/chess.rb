@@ -17,6 +17,7 @@ require_relative './moves/castle_move'
 require_relative './moves/capture_move'
 require_relative './moves/promotion_move'
 require_relative './moves/first_pawn_move'
+require_relative './moves/pawn_capture_move'
 require_relative './moves/en_passant_move'
 
 # Main class for a chess game
@@ -25,7 +26,6 @@ require_relative './moves/en_passant_move'
 # @attr white_player [Player] player asociated with the white army
 # @attr black_player [Player] player asociated with the black army
 class Chess
-  # TODO, Only needed for tests now
   include MoveCreator
 
   attr_reader :moves_list, :turn, :board
@@ -42,7 +42,7 @@ class Chess
   # @attr move [Move] the move we want to add to the current game
   def add_move(move)
     move.validate
-    validate_move(move.from, move.to)
+    validate_move(move.from, move.to) # TODO, remove from here to move.validate method
     move.execute
     @moves_list << move
     @board.last_move = move
@@ -107,35 +107,7 @@ class Chess
   # @param yaml_string [String] the string representing the object saved with YAML.dump()
   def self.unserialize(yaml_string)
     YAML.safe_load(yaml_string,
-                   permitted_classes: [Chess, Board, Move, Player, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove, FirstPawnMove, EnPassantMove], aliases: true)
-  end
-
-  # Validates if the passed colour if current player is in check or not in the current position
-  # @param army [String] the colour of the side we want to know if it's in check
-  # @return [Boolean] true if its in check otherwise false
-  def in_check?(board, army)
-    board_clone = DeepClone.clone(board)
-    king = board_clone.squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
-
-    board_clone.squares.flatten.each do |piece|
-      next if piece.nil? || piece.color == army
-
-      # Look for a piece that is attacking the king
-      from = board_clone.get_coordinate(piece)
-      move = create_move(from, board_clone.get_coordinate(king), board_clone)
-
-      begin
-        # Found a move that can capture the king
-        move.validate
-        return true
-      rescue StandardError => e
-        # Its an invalid move, so as it cannot be performed, is not in check
-        # Continue looking for captures moves
-        next
-      end
-    end
-
-    false
+                   permitted_classes: [Chess, Board, Move, Player, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove, PawnCaptureMove, FirstPawnMove, EnPassantMove], aliases: true)
   end
 
   private
@@ -147,11 +119,12 @@ class Chess
   def will_put_my_king_in_check(from, to)
     board_clone = DeepClone.clone(@board)
 
+    # TODO, check if its a queening move
     move = create_move(from, to, board_clone)
     begin
       move.validate
       move.execute
-      in_check?(board_clone, @turn)
+      board_clone.in_check?(board_clone, @turn)
     rescue StandardError => e
       # It's an Illegal move -> cannot be added, so return true for now
       true

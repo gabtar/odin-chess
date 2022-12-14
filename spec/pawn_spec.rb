@@ -29,14 +29,6 @@ RSpec.describe Pawn do
       end
     end
 
-    context 'when a pawn on a2 wants to capture a pawn on b3' do
-      it 'returns true' do
-        allow(board).to receive(:get_piece_at).with('b3').and_return(black_pawn)
-        allow(board).to receive(:calculate_distance_vector).with('a2', 'b3').and_return(valid_pawn_capture_distance)
-        expect(white_pawn.can_move_to?(board, 'a2', 'b3')).to be_truthy
-      end
-    end
-
     context 'when a pawn on a2 wants to capture a pawn on h8' do
       it 'returns false' do
         allow(board).to receive(:get_piece_at).with('h8').and_return(white_pawn)

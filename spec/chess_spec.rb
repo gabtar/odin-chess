@@ -7,7 +7,7 @@ require_relative '../lib/chess/pieces/bishop'
 require_relative '../lib/chess/chess'
 require_relative '../lib/chess/player'
 
-RSpec.describe Chess do
+RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
   describe '#add_move' do
     subject(:chess) { described_class.new(board, white_player, black_player) }
     let(:white_player) { instance_double('Player') }
@@ -233,6 +233,37 @@ RSpec.describe Chess do
     end
   end
 
+  context '#pawn_capture??' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { instance_double('Board') }
+    let(:pawn) { instance_double('Pawn') }
+    let(:bishop) { instance_double('Bishop') }
+
+    context 'when its a pawn capture' do
+      it 'returns true' do
+        allow(board).to receive(:get_piece_at).with('d2').and_return(pawn)
+        allow(board).to receive(:get_piece_at).with('e3').and_return(bishop)
+        allow(board).to receive(:calculate_distance_vector).with('d2', 'e3').and_return([1, 1])
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
+
+        expect(chess.pawn_capture?('d2', 'e3', board)).to be_truthy
+      end
+    end
+
+    context 'when its a not a pawn capture' do
+      it 'returns false' do
+        allow(board).to receive(:get_piece_at).with('d2').and_return(pawn)
+        allow(board).to receive(:get_piece_at).with('d3').and_return(nil)
+        allow(board).to receive(:calculate_distance_vector).with('d2', 'e3').and_return([1, 1])
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
+
+        expect(chess.pawn_capture?('d2', 'd3', board)).to be_falsy
+      end
+    end
+  end
+
   context '#en_passant?' do
     subject(:chess) { described_class.new(board, white_player, black_player) }
     let(:white_player) { Player.new('white') }
@@ -240,6 +271,7 @@ RSpec.describe Chess do
     let(:board) { instance_double('Board') }
     let(:pawn) { instance_double('Pawn') }
     let(:first_pawn_move) { instance_double('FirstPawnMove') }
+    let(:not_first_pawn_move) { instance_double('NormalMove') }
 
     context 'when its an en passant pawn move' do
       it 'returns true' do
@@ -252,55 +284,24 @@ RSpec.describe Chess do
       end
     end
 
-    # context 'when its not an en passant pawn move' do
-    #   it 'returns false' do
-    #     allow(board).to receive(:get_piece_at).with('d3').and_return(pawn)
-    #     allow(pawn).to receive(:color).and_return('black')
-    #     allow(board).to receive(:calculate_distance_vector).with('d3', 'e2').and_return([1, -1])
-    #     expect(chess.en_passant?('d3', 'e2', board)).to be_falsy
-    #   end
-    # end
-    #
-    # context 'when its an en passant pawn move for black' do
-    #   it 'returns true' do
-    #     allow(board).to receive(:get_piece_at).with('d4').and_return(pawn)
-    #     allow(pawn).to receive(:color).and_return('black')
-    #     allow(board).to receive(:calculate_distance_vector).with('d4', 'e3').and_return([1, -1])
-    #     expect(chess.en_passant?('d4', 'e3', board)).to be_truthy
-    #   end
-    # end
-  end
-
-  describe '#in_check?' do
-    subject(:chess) { described_class.new(board, white_player, black_player) }
-    let(:white_player) { Player.new('white') }
-    let(:black_player) { Player.new('black') }
-    let(:board) { Board.new }
-    let(:black_king) { King.new('black') }
-    let(:white_pawn) { Pawn.new('white') }
-    let(:white_bishop) { Bishop.new('white') }
-
-    context 'when the black king is not in check' do
+    context 'when its not an en passant pawn move' do
       it 'returns false' do
-        board.add_piece(black_king, 'e8')
-        board.add_piece(white_pawn, 'a8')
-        expect(chess.in_check?(chess.board, 'black')).to be_falsy
+        allow(board).to receive(:get_piece_at).with('d3').and_return(pawn)
+        allow(pawn).to receive(:color).and_return('black')
+        allow(board).to receive(:last_move).and_return(not_first_pawn_move)
+        allow(board).to receive(:calculate_distance_vector).with('d3', 'e2').and_return([1, -1])
+        expect(chess.en_passant?('d3', 'e2', board)).to be_falsy
       end
     end
 
-    context 'when the black king is in check' do
+    context 'when its an en passant pawn move for black' do
       it 'returns true' do
-        board.add_piece(black_king, 'e8')
-        board.add_piece(white_pawn, 'f7')
-        expect(chess.in_check?(chess.board, 'black')).to be_truthy
-      end
-    end
-
-    context 'when the black king is by a white bishop' do
-      it 'returns true' do
-        board.add_piece(black_king, 'e8')
-        board.add_piece(white_bishop, 'a4')
-        expect(chess.in_check?(chess.board, 'black')).to be_truthy
+        allow(board).to receive(:get_piece_at).with('d4').and_return(pawn)
+        allow(pawn).to receive(:color).and_return('black')
+        allow(board).to receive(:last_move).and_return(first_pawn_move)
+        allow(first_pawn_move).to receive(:is_a?).and_return(FirstPawnMove)
+        allow(board).to receive(:calculate_distance_vector).with('d4', 'e3').and_return([1, -1])
+        expect(chess.en_passant?('d4', 'e3', board)).to be_truthy
       end
     end
   end

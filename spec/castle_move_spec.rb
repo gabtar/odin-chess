@@ -31,7 +31,7 @@ RSpec.describe CastleMove do
       it 'does not raises exception' do
         board.add_piece(king, 'e1')
         board.add_piece(rook, 'h1')
-        board.add_piece(bishop, 'a7')
+        board.add_piece(bishop, 'a6')
         move = CastleMove.new('e1', 'g1', board)
         expect { move.validate }.to raise_error(IllegalMoveError)
       end

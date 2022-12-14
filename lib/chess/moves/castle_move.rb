@@ -5,8 +5,9 @@ require_relative './move'
 # A castle move in chess
 class CastleMove < Move
   def validate
-    opponent_army = @from_piece.color == 'white' ? 'black' : 'white'
-    raise IllegalMoveError, 'Invalid move' if @board.path_attacked?(@from, @to, opponent_army)
+    # TODO, check that for the king is the first move, maybe a flag on the king?
+    # TODO, check blocked_path?
+    raise IllegalMoveError, 'Invalid castle' if @board.path_attacked?(@from, @to, @from_piece.color)
   end
 
   # Performs the move in the board
@@ -17,14 +18,14 @@ class CastleMove < Move
 
     # Move the rook
     rook_square = short? ? "h#{@from[1]}" : "a#{@from[1]}"
-    rook = short? ? @board.get_piece_at(rook_square) : @board.get_piece_at(rook_square)
+    rook = @board.get_piece_at(rook_square)
     rook_destination = short? ? "f#{@from[1]}" : "d#{@from[1]}"
     @board.add_piece(nil, rook_square)
     @board.add_piece(rook, rook_destination)
   end
 
   # Outputs move in long algebraic notation
-  # @return [String] the move in long algebraic notation
+  # @return [String] the move in algebraic notation
   def long_algebraic_notation
     return '0-0' if short?
 

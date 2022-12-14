@@ -2,6 +2,7 @@
 
 require_relative '../lib/chess/board/board'
 require_relative '../lib/chess/pieces/pawn'
+require_relative '../lib/chess/pieces/rook'
 require_relative '../lib/chess/pieces/king'
 require_relative '../lib/chess/pieces/bishop'
 require_relative '../lib/chess/errors/invalid_coordinate'
@@ -162,30 +163,56 @@ RSpec.describe Board do
 
   describe '#path_attacked?' do
     subject(:board) { described_class.new }
-    let(:bishop) { instance_double(Bishop) }
-    let(:king) { instance_double(King) }
-    let(:rook) { instance_double(Rook) }
+    let(:black_bishop) { Bishop.new('black') }
+    let(:white_king) { King.new('white') }
+    let(:white_rook) { Rook.new('white') }
 
     context 'when the path is not attacked' do
       it 'returns false' do
-        allow(king).to receive(:color).and_return('white')
-        allow(rook).to receive(:color).and_return('white')
-        board.add_piece(king, 'a1')
-        board.add_piece(rook, 'h8')
+        board.add_piece(white_king, 'e1')
+        board.add_piece(white_rook, 'h1')
         expect(board.path_attacked?('e1', 'g1', 'white')).to be_falsy
       end
     end
 
     context 'when the path is attacked' do
       it 'returns true' do
-        allow(king).to receive(:color).and_return('white')
-        allow(rook).to receive(:color).and_return('white')
-        allow(bishop).to receive(:color).and_return('black')
-        board.add_piece(bishop, 'a6')
-        board.add_piece(king, 'a1')
-        board.add_piece(rook, 'h8')
-        allow(bishop).to receive(:can_move_to?).with(board, 'a6', 'f1').and_return(true)
-        expect(board.path_attacked?('e1', 'g1', 'white')).to be_truthy
+        board.add_piece(black_bishop, 'e4')
+        board.add_piece(white_king, 'e1')
+        board.add_piece(white_rook, 'a1')
+        expect(board.path_attacked?('e1', 'a1', 'white')).to be_truthy
+      end
+    end
+  end
+
+  describe '#in_check?' do
+    subject(:chess) { described_class.new }
+    let(:board) { Board.new }
+    let(:black_king) { King.new('black') }
+    let(:white_pawn) { Pawn.new('white') }
+    let(:white_bishop) { Bishop.new('white') }
+
+    context 'when the black king is not in check' do
+      it 'returns false' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(white_pawn, 'a8')
+        expect(board.in_check?(board, 'black')).to be_falsy
+      end
+    end
+
+    context 'when the black king is in check' do
+      it 'returns true' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(white_pawn, 'f7')
+        expect(board.in_check?(board, 'black')).to be_truthy
+      end
+    end
+
+    context 'when the black king is by a white bishop' do
+      it 'returns true' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(white_bishop, 'a4')
+        expect(board.in_check?(board, 'black')).to be_truthy
       end
     end
   end

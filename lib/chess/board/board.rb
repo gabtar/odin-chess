@@ -1,12 +1,14 @@
 # frozen_string_literal: true
+require 'deep_clone'
 
 require_relative '../errors/invalid_coordinate'
 require_relative '../errors/illegal_move'
+require_relative '../moves/move_creator'
 
 # Class for chess board
-#
-# @attr squares [Array] Squares of the chess board
 class Board
+  include MoveCreator
+
   attr_reader :squares
   attr_accessor :last_move
 
@@ -68,18 +70,47 @@ class Board
   # Used for castle validation
   # @param from [String] the starting square coordinate
   # @param to [String] the destination square coordinate
-  # @param army [String] the colour of the side we want to know if it's in check
+  # @param army [String] the color of the side we want to know if the path is attacked
   def path_attacked?(from, to, army)
     direction = calculate_direction_vector(from, to)
     current_square = next_square(from, direction)
 
     until current_square == to
       @squares.flatten.each do |piece|
-        return true if !piece.nil? && piece.color != army && piece.can_move_to?(self, get_coordinate(piece),
-                                                                                current_square)
+        next if piece.nil? || piece.color == army
+
+        return true if piece.can_move_to?(self, get_coordinate(piece), current_square) && !blocked_path?(get_coordinate(piece), current_square)
       end
       current_square = next_square(current_square, direction)
     end
+    false
+  end
+
+  # Validates if the passed colour if current player is in check or not in the current position
+  # @param army [String] the colour of the side we want to know if it's in check
+  # @return [Boolean] true if its in check otherwise false
+  def in_check?(board, army)
+    board_clone = DeepClone.clone(self)
+    king = board_clone.squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
+
+    board_clone.squares.flatten.each do |piece|
+      next if piece.nil? || piece.color == army
+
+      # Look for a piece that is attacking the king
+      from = board_clone.get_coordinate(piece)
+      move = create_move(from, board_clone.get_coordinate(king), board_clone)
+
+      begin
+        # Found a move that can capture the king
+        move.validate
+        return true
+      rescue StandardError => e
+        # Its an invalid move, so as it cannot be performed, is not in check
+        # Continue looking for captures moves
+        next
+      end
+    end
+
     false
   end
 
@@ -108,6 +139,19 @@ class Board
     squares[rank][file]
   end
 
+  # Returns the square where the passed +piece+ is located
+  # @param piece [Piece]
+  # @return [String, nil] the coordinate of the piece
+  def get_coordinate(piece)
+    coordinate = nil
+    @squares.each_with_index do |rank, rank_index|
+      rank.each_with_index do |file, file_index|
+        coordinate = (97 + file_index).chr + (rank_index + 1).to_s if file.eql? piece
+      end
+    end
+    coordinate
+  end
+
   private
 
   # Internal method for #blocked_path? returns the next square in the specified
@@ -119,18 +163,5 @@ class Board
     next_file = file + direction[1]
 
     "#{(next_file + 97).chr}#{next_rank + 1}"
-  end
-
-  public
-
-  # Internal method for #in_check? that returns the cordinate or the pice or nil
-  def get_coordinate(piece)
-    coordinate = nil
-    @squares.each_with_index do |rank, rank_index|
-      rank.each_with_index do |file, file_index|
-        coordinate = (97 + file_index).chr + (rank_index + 1).to_s if file.eql? piece
-      end
-    end
-    coordinate
   end
 end
