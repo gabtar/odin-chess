@@ -6,8 +6,8 @@ require_relative './move'
 class CastleMove < Move
   def validate
     # TODO, check that for the king is the first move, maybe a flag on the king?
-    # TODO, check blocked_path?
     raise IllegalMoveError, 'Invalid castle' if @board.path_attacked?(@from, @to, @from_piece.color)
+    raise IllegalMoveError, 'Path blocked' if @board.blocked_path?(@from, @to)
   end
 
   # Performs the move in the board

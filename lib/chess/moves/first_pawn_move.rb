@@ -10,12 +10,10 @@ class FirstPawnMove < Move
   end
 
   def validate
-    # TODO, check blocked path...
+    raise IllegalMoveError, 'Blocked path' if @board.blocked_path?(@from, @to) || !@to_piece.nil?
     raise IllegalMoveError, 'Illegal piece move' if @pawn_color == 'white' && @from[1] != '2'
     raise IllegalMoveError, 'Illegal piece move' if @pawn_color == 'black' && @from[1] != '7'
-
-    raise IllegalMoveError, 'Illegal piece move' unless @from_piece.can_move_to?(@board, @from,
-                                                                                 @to) || @to_piece.color == @from_piece.color
+    raise IllegalMoveError, 'Illegal piece move' unless @from_piece.can_move_to?(@board, @from, @to)
   end
 
   # Performs the move in the board

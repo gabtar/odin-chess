@@ -116,48 +116,48 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
     end
   end
 
-  # describe '#checkmate?' do
-  #   subject(:chess) { described_class.new(board, white_player, black_player) }
-  #   let(:white_player) { Player.new('white') }
-  #   let(:black_player) { Player.new('black') }
-  #   let(:board) { Board.new }
-  #
-  #   context 'when black is in checkmate' do
-  #     it 'returns true' do
-  #       board.add_piece(King.new('black'), 'a1')
-  #       board.add_piece(Rook.new('white'), 'h2')
-  #       board.add_piece(Rook.new('white'), 'h1')
-  #       chess.switch_turn
-  #
-  #       expect(chess.turn).to eq('black')
-  #       expect(chess.checkmate?).to be_truthy
-  #     end
-  #   end
-  #
-  #   context 'when black is not in checkmate' do
-  #     it 'returns false' do
-  #       board.add_piece(King.new('black'), 'a1')
-  #       board.add_piece(Rook.new('white'), 'h1')
-  #       chess.switch_turn
-  #
-  #       expect(chess.turn).to eq('black')
-  #       expect(chess.checkmate?).to be_falsy
-  #     end
-  #   end
-  #
-  #   context 'when a piece move can avoid the checkmate' do
-  #     it 'returns false' do
-  #       board.add_piece(King.new('black'), 'a1')
-  #       board.add_piece(Rook.new('white'), 'h2')
-  #       board.add_piece(Rook.new('white'), 'h1')
-  #       board.add_piece(Rook.new('black'), 'b8')
-  #       chess.switch_turn
-  #
-  #       expect(chess.turn).to eq('black')
-  #       expect(chess.checkmate?).to be_falsy
-  #     end
-  #   end
-  # end
+  describe '#checkmate?' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { Board.new }
+
+    context 'when black is in checkmate' do
+      it 'returns true' do
+        board.add_piece(King.new('black'), 'a1')
+        board.add_piece(Rook.new('white'), 'h2')
+        board.add_piece(Rook.new('white'), 'h1')
+        chess.switch_turn
+
+        expect(chess.turn).to eq('black')
+        expect(chess.checkmate?(board, 'black')).to be_truthy
+      end
+    end
+
+    context 'when black is not in checkmate' do
+      it 'returns false' do
+        board.add_piece(King.new('black'), 'a1')
+        board.add_piece(Rook.new('white'), 'h1')
+        chess.switch_turn
+
+        expect(chess.turn).to eq('black')
+        expect(chess.checkmate?(board, 'black')).to be_falsy
+      end
+    end
+
+    context 'when a piece move can avoid the checkmate' do
+      it 'returns false' do
+        board.add_piece(King.new('black'), 'a1')
+        board.add_piece(Rook.new('white'), 'h2')
+        board.add_piece(Rook.new('white'), 'h1')
+        board.add_piece(Rook.new('black'), 'b8')
+        chess.switch_turn
+
+        expect(chess.turn).to eq('black')
+        expect(chess.checkmate?(board, 'black')).to be_falsy
+      end
+    end
+  end
 
   # Tests for MoveCreator module/mixin
   describe '#promotion?' do

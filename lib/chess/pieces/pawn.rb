@@ -12,8 +12,8 @@ class Pawn < Piece
     # default move = +1 rank, same file
     # +2 ranks on first move
     # [-1, 1] and [1, 1] only when capturing
-    white_moves = [[1, 0], [2, 0], [1, 1], [1, -1]]
-    black_moves = [[-1, 0], [-2, 0], [-1, 1], [-1, -1]]
+    white_moves = [[1, 0], [2, 0]]
+    black_moves = [[-1, 0], [-2, 0]]
     @allowed_distances = color == 'white' ? white_moves : black_moves
   end
 

@@ -19,13 +19,13 @@ module MoveCreator
 
     return EnPassantMove.new(from, to, board) if en_passant?(from, to, board)
 
+    return FirstPawnMove.new(from, to, board) if first_pawn_move?(from, to, board)
+
     return PawnCaptureMove.new(from, to, board) if pawn_capture?(from, to, board)
 
     return CaptureMove.new(from, to, board) if capture?(from, to, board)
 
     return PromotionMove.new(from, to, board, piece) if promotion?(from, to, board)
-
-    return FirstPawnMove.new(from, to, board) if first_pawn_move?(from, to, board)
 
     # TODO, if from piece.nil? -> Raise IllegalMoveError?
     NormalMove.new(from, to, board)
@@ -94,9 +94,11 @@ module MoveCreator
   # @attr board [Board] the board with the position before the move
   def en_passant?(from, to, board)
     en_passant_distance = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+    distance = board.calculate_distance_vector(from, to)
+    last_move_validation = board.last_move.is_a?(FirstPawnMove)
+    from_en_passant_validation = %w[4 5].include?(from[1])
 
-    return true if en_passant_distance.include?(board.calculate_distance_vector(from,
-                                                                                to)) && board.last_move.is_a?(FirstPawnMove)
+    return true if en_passant_distance.include?(distance) && last_move_validation && from_en_passant_validation
 
     false
   end

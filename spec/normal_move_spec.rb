@@ -3,6 +3,7 @@
 require_relative '../lib/chess/moves/normal_move'
 require_relative '../lib/chess/board/board'
 require_relative '../lib/chess/pieces/knight'
+require_relative '../lib/chess/pieces/pawn'
 
 RSpec.describe NormalMove do
   describe '#execute' do
@@ -23,6 +24,7 @@ RSpec.describe NormalMove do
   describe '#validate' do
     let(:board) { Board.new }
     let(:white_knight) { instance_double('Knight') }
+    let(:pawn) { instance_double('Pawn') }
 
     context 'when validating a normal knight move from d4 to e6' do
       it 'does not raises IllegalMoveError' do
@@ -31,6 +33,16 @@ RSpec.describe NormalMove do
         allow(white_knight).to receive(:can_move_to?).with(board, 'd4', 'e6').and_return(true)
         move = NormalMove.new('d4', 'e6', board)
         expect { move.validate }.not_to raise_error
+      end
+    end
+
+    context 'when validating a normal pawn move from e2 to d3' do
+      it 'raises IllegalMoveError' do
+        board.add_piece(white_knight, 'd4')
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
+        allow(pawn).to receive(:can_move_to?).with(board, 'e2', 'd3').and_return(false)
+        move = NormalMove.new('e2', 'd3', board)
+        expect { move.validate }.to raise_error(IllegalMoveError)
       end
     end
   end

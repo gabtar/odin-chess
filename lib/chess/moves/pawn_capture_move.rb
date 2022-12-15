@@ -5,12 +5,17 @@ require_relative './move'
 # A capture move only for pawns
 class PawnCaptureMove < Move
   def validate
+    white_captures_distances = [[1, 1], [1, -1]]
+    black_captures_distances = [[-1, 1], [-1, -1]]
+    distance = @board.calculate_distance_vector(@from, @to)
     pawn_color = @from_piece.color
 
+    raise IllegalMoveError, 'Illegal move' if @to_piece.nil? || @to_piece.color == pawn_color
+
     if pawn_color == 'white'
-      raise IllegalMoveError, 'Illegal piece move' unless @to_piece.color != pawn_color
+      raise IllegalMoveError, 'Illegal piece move' unless @to_piece.color != pawn_color && white_captures_distances.include?(distance)
     elsif pawn_color == 'black'
-      raise IllegalMoveError, 'Illegal piece move' unless  @to_piece.color != pawn_color
+      raise IllegalMoveError, 'Illegal piece move' unless  @to_piece.color != pawn_color && black_captures_distances.include?(distance)
     end
   end
 

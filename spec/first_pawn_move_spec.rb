@@ -22,11 +22,13 @@ RSpec.describe FirstPawnMove do
   describe '#validate' do
     let(:board) { instance_double('Board') }
     let(:white_pawn) { instance_double('Pawn') }
+    let(:black_pawn) { instance_double('Pawn') }
 
     context 'when moving a white pawn from rank 2' do
       it 'not raises IllegalMoveError' do
         allow(board).to receive(:get_piece_at).with('e2').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('e4').and_return(nil)
+        allow(board).to receive(:blocked_path?).with('e2', 'e4').and_return(false)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e2', 'e4').and_return(true)
         allow(white_pawn).to receive(:color).and_return('white')
         move = FirstPawnMove.new('e2', 'e4', board)
@@ -39,9 +41,39 @@ RSpec.describe FirstPawnMove do
       it 'raises IllegalMoveError' do
         allow(board).to receive(:get_piece_at).with('e4').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('e6').and_return(nil)
+        allow(board).to receive(:blocked_path?).with('e4', 'e6').and_return(false)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e4', 'e6').and_return(true)
         allow(white_pawn).to receive(:color).and_return('white')
         move = FirstPawnMove.new('e4', 'e6', board)
+
+        expect { move.validate }.to raise_error(IllegalMoveError)
+      end
+    end
+
+    context 'when moving a white pawn from rank 2, with a piece blocking on rank 3' do
+      it 'raises IllegalMoveError' do
+        allow(board).to receive(:get_piece_at).with('e2').and_return(white_pawn)
+        allow(board).to receive(:get_piece_at).with('e4').and_return(nil)
+        allow(board).to receive(:blocked_path?).with('e2', 'e4').and_return(true)
+        allow(white_pawn).to receive(:can_move_to?).with(board, 'e4', 'e4').and_return(true)
+        allow(white_pawn).to receive(:can_move_to?).with(board, 'e2', 'e4').and_return(true)
+        allow(white_pawn).to receive(:color).and_return('white')
+        move = FirstPawnMove.new('e2', 'e4', board)
+
+        expect { move.validate }.to raise_error(IllegalMoveError)
+      end
+    end
+
+    context 'when moving a white pawn from rank 2, with an opponent piece on rank 4' do
+      it 'raises IllegalMoveError' do
+        allow(board).to receive(:get_piece_at).with('e2').and_return(white_pawn)
+        allow(board).to receive(:get_piece_at).with('e4').and_return(black_pawn)
+        allow(board).to receive(:blocked_path?).with('e2', 'e4').and_return(false)
+        allow(black_pawn).to receive(:color).and_return('black')
+        allow(white_pawn).to receive(:can_move_to?).with(board, 'e4', 'e4').and_return(true)
+        allow(white_pawn).to receive(:can_move_to?).with(board, 'e2', 'e4').and_return(true)
+        allow(white_pawn).to receive(:color).and_return('white')
+        move = FirstPawnMove.new('e2', 'e4', board)
 
         expect { move.validate }.to raise_error(IllegalMoveError)
       end

@@ -5,6 +5,7 @@ require_relative './move'
 # A normal/piece movement in chess
 class NormalMove < Move
   def validate
+    raise IllegalMoveError, 'No piece' if @from_piece.nil?
     raise IllegalMoveError, 'Illegal piece move' unless @from_piece.can_move_to?(@board, @from, @to)
     raise IllegalMoveError, 'Path blocked' if !@from_piece.is_a?(Knight) && @board.blocked_path?(@from, @to)
     raise IllegalMoveError, 'Path blocked' unless @to_piece.nil?

@@ -40,6 +40,13 @@ class EnterMoveCommand
       move = create_move(from, to, @game.current_game.board, piece)
 
       @game.add_move(move)
+
+      # TODO, improve final message
+      if @game.finished?
+        display_message(" Game finished, #{@game.winner} won ")
+        @window.refresh
+        sleep(3)
+      end
     rescue StandardError => e
       display_message(e.message)
       @window.refresh

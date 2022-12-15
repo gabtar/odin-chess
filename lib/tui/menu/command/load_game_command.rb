@@ -22,6 +22,8 @@ class LoadGameCommand
     )
     games_list_menu.add_option(ExitCommand.new)
 
+    # TODO, check that this overrides initial options so, cannot go back with a submenu
+    # I need to find a way to go back to previous menu instead of the exit!
     @menu.options = games_list_menu.options
     @menu.max_items = games_list_menu.options.length - 1
     @window.clear

@@ -70,11 +70,11 @@ class Chess
     YAML.dump(self)
   end
 
-  # Checks if the current player is in checkmate
+  # Checks if the passed +army+ on the passed +board+ is in checkmate(no legal moves)
   # @return [Boolean]
   def checkmate?(board, army)
     checkmate = false
-    if in_check?(board, army)
+    if board.in_check?(board, army)
       coordinates = []
       8.times do |number|
         coordinates << ('a'..'h').to_a.map! { |rank| rank + (number + 1).to_s }
