@@ -7,7 +7,7 @@ RSpec.describe Player do
     subject(:player) { described_class.new('white') }
     context 'when its playing white' do
       it 'returns white' do
-        expect(player.colour).to eql('white')
+        expect(player.color).to eql('white')
       end
     end
   end

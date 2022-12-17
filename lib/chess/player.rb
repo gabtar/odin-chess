@@ -4,11 +4,9 @@
 #
 # @attr colour [String] the colour army of the player
 class Player
-  attr_reader :colour
-  attr_accessor :captured_pieces
+  attr_reader :color
 
-  def initialize(colour)
-    @colour = colour
-    @captured_pieces = []
+  def initialize(color)
+    @color = color
   end
 end

@@ -17,15 +17,15 @@ module MoveCreator
   def create_move(from, to, board, piece = nil)
     return CastleMove.new(from, to, board) if castle?(from, to, board)
 
+    return PromotionMove.new(from, to, board, piece) if promotion?(from, to, board)
+
+    return PawnCaptureMove.new(from, to, board) if pawn_capture?(from, to, board)
+
     return EnPassantMove.new(from, to, board) if en_passant?(from, to, board)
 
     return FirstPawnMove.new(from, to, board) if first_pawn_move?(from, to, board)
 
-    return PawnCaptureMove.new(from, to, board) if pawn_capture?(from, to, board)
-
     return CaptureMove.new(from, to, board) if capture?(from, to, board)
-
-    return PromotionMove.new(from, to, board, piece) if promotion?(from, to, board)
 
     # TODO, if from piece.nil? -> Raise IllegalMoveError?
     NormalMove.new(from, to, board)
@@ -74,7 +74,7 @@ module MoveCreator
   # @attr to [String] the ending position square
   # @attr board [Board] the board with the position before the move
   def capture?(from, to, board)
-    !board.get_piece_at(to).nil? && !board.get_piece_at(from).nil? && board.get_piece_at(from).color != board.get_piece_at(to).color
+    !board.get_piece_at(to).nil? && !board.get_piece_at(from).nil? && board.get_piece_at(from).color != board.get_piece_at(to).color && !board.get_piece_at(from).is_a?(Pawn)
   end
 
   # Detects if it's a first move for a pawn

@@ -1,22 +1,26 @@
 # frozen_string_literal: true
 
+require_relative './sub_menu_command'
+require_relative '../../../helpers/game_configurator'
+
 # Creates an empty game and loads the ingame menu
 # @attr name [MenuChess] the actual menu chess object
 # @attr name [MenuChess] the new menu that will be displayed after
 # @attr name [String] the name that will be rendered in the menu
-class NewGameCommand
+class NewGameCommand < SubMenuCommand
+  include GameConfigurator
+
   attr_reader :name
 
-  def initialize(menu, submenu, name)
-    @menu = menu
-    @submenu = submenu
-    @name = name
+  def initialize(menu, submenu, name, window, game, computer_player: false, back_menu: false)
+    super(menu, submenu, name, window, back_menu: back_menu)
+    @game = game
+    @computer_player = computer_player
   end
 
-  # Switches to a new game menu
+  # Creates the game and swites to submenu(ingame menu)
   def execute
-    @menu.options = @submenu.options
-    @menu.max_items = @submenu.options.length - 1
-    @menu.render
+    @game.current_game = create_new_game(computer_player: @computer_player)
+    super
   end
 end

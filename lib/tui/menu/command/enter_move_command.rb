@@ -28,24 +28,35 @@ class EnterMoveCommand
         piece = input_move('Promote to(Q/R/N/B): ') until %w[Q R N B].include?(piece)
         case piece
         when 'Q'
-          piece = Queen.new(@game.current_game.turn)
+          piece = Queen.new(@game.current_game.turn.color)
         when 'R'
-          piece = Rook.new(@game.current_game.turn)
+          piece = Rook.new(@game.current_game.turn.color)
         when 'B'
-          piece = Bishop.new(@game.current_game.turn)
+          piece = Bishop.new(@game.current_game.turn.color)
         when 'N'
-          piece = Knight.new(@game.current_game.turn)
+          piece = Knight.new(@game.current_game.turn.color)
         end
       end
       move = create_move(from, to, @game.current_game.board, piece)
 
       @game.add_move(move)
 
-      # TODO, improve final message
+      # TODO, improve final message change menu?
       if @game.finished?
         display_message(" Game finished, #{@game.winner} won ")
         @window.refresh
         sleep(3)
+        return
+      end
+
+      # If the opponent is a ComputerPlayer, perform the computer move
+      loop do
+        begin
+          @game.add_move(@game.current_game.turn.play_move) if @game.current_game.turn.is_a?(ComputerPlayer)
+          break
+        rescue IllegalMoveError
+          next
+        end
       end
     rescue StandardError => e
       display_message(e.message)

@@ -25,6 +25,7 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
       it 'it adds the move to the game' do
         board.add_piece(white_pawn, 'a2')
         allow(white_pawn).to receive(:can_move_to?).with(any_args).and_return(true)
+        allow(white_player).to receive(:color).and_return('white')
         chess.add_move(move)
         expect(chess.moves_list).to have_attributes(size: (be > 0))
       end
@@ -76,16 +77,19 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
 
     context 'when it is whites turn' do
       it 'switches to blacks turn' do
+        allow(white_player).to receive(:color).and_return('white') 
         chess.switch_turn
-        expect(chess.turn).to eql('black')
+        expect(chess.turn).to eql(black_player)
       end
     end
 
     context 'when it is blacks turn' do
       it 'switches to whites turn' do
+        allow(white_player).to receive(:color).and_return('white') 
+        allow(black_player).to receive(:color).and_return('black') 
         chess.switch_turn
         chess.switch_turn
-        expect(chess.turn).to eql('white')
+        expect(chess.turn).to eql(white_player)
       end
     end
   end
@@ -129,7 +133,7 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
         board.add_piece(Rook.new('white'), 'h1')
         chess.switch_turn
 
-        expect(chess.turn).to eq('black')
+        expect(chess.turn).to eq(black_player)
         expect(chess.checkmate?(board, 'black')).to be_truthy
       end
     end
@@ -140,7 +144,7 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
         board.add_piece(Rook.new('white'), 'h1')
         chess.switch_turn
 
-        expect(chess.turn).to eq('black')
+        expect(chess.turn).to eq(black_player)
         expect(chess.checkmate?(board, 'black')).to be_falsy
       end
     end
@@ -153,7 +157,7 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
         board.add_piece(Rook.new('black'), 'b8')
         chess.switch_turn
 
-        expect(chess.turn).to eq('black')
+        expect(chess.turn).to eq(black_player)
         expect(chess.checkmate?(board, 'black')).to be_falsy
       end
     end

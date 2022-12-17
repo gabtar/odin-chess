@@ -8,7 +8,7 @@ require_relative '../../chess/chess'
 # @attr options [Array] an array of commands for interacting with the Chess game
 # @attr window [Window] a Curses.Window object where the menu will be rendered
 class MenuChess
-  attr_accessor :name, :options, :max_items
+  attr_accessor :name, :options, :max_items, :active_index
 
   include Curses
 
@@ -22,16 +22,30 @@ class MenuChess
 
   # Displays the menu options inside the curses window
   def render
-    @options.each_with_index do |element, index|
+    # TODO, slice @options array to a number of options that fits in
+    # the actual window height
+    # TODO, append nil to @options.slice to avoid highlighted border effects?
+    # @window.clear it isnt working well
+    window_height = @window.maxy
+    start = 0
+    start = window_height - 2 if @active_index >= window_height - 2
+    @window.clear
+    @window.box('|', '-')
+
+    # @options.each_with_index do |element, index|
+    @options.slice(start, window_height - 2).each_with_index do |element, index|
       name_length = element.name.length
       surround_spaces = ' ' * ((@window.maxx - name_length - 2) / 2)
       aditional_space = name_length.odd? ? ' ' : ''
       @window.setpos(index + 1, 1)
       # Highlight selected option
-      @window.attrset(index == @active_index ? A_STANDOUT : A_NORMAL)
+      # @window.attrset(index == @active_index - start ? A_STANDOUT : A_NORMAL)
+      @window.attrset(index == @active_index - start ? A_STANDOUT : A_NORMAL)
       @window.addstr("#{surround_spaces}#{element.name}#{surround_spaces}#{aditional_space}")
     end
-    @window.refresh
+
+    @window.standend
+    @window.noutrefresh
   end
 
   # Updates to next option avaible in the menu. If +active_index+

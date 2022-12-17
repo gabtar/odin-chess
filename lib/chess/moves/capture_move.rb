@@ -8,7 +8,7 @@ class CaptureMove < Move
     raise IllegalMoveError, 'Illegal piece' if @board.get_piece_at(from).nil? || @to_piece.nil?
     raise IllegalMoveError, 'Illegal piece move' unless @from_piece.can_move_to?(@board, @from,
                                                                                  @to) || @to_piece.color == @from_piece.color
-    raise IllegalMoveError, 'Path blocked' if @board.blocked_path?(@from, @to) && !@from_piece.is_a?(Knight)
+    raise IllegalMoveError, 'Path blocked' if !@from_piece.is_a?(Knight) && @board.blocked_path?(@from, @to)
   end
 
   # Performs the move in the board

@@ -15,7 +15,22 @@ class PromotionMove < Move
   end
 
   def validate
-    raise IllegalMoveError, 'Illegal piece move' unless @from_piece.can_move_to?(@board, @from, @to)
+    white_captures_distances = [[1, 1], [1, -1]]
+    black_captures_distances = [[-1, 1], [-1, -1]]
+    distance = @board.calculate_distance_vector(@from, @to)
+    pawn_color = @from_piece.color
+
+    raise IllegalMoveError, 'Illegal move' if @to_piece.nil? || @to_piece.color == pawn_color
+
+    if pawn_color == 'white'
+      raise IllegalMoveError, 'Illegal piece move' unless @to_piece.color != pawn_color && white_captures_distances.include?(distance)
+      return
+    elsif pawn_color == 'black'
+      raise IllegalMoveError, 'Illegal piece move' unless  @to_piece.color != pawn_color && black_captures_distances.include?(distance)
+      return
+    end
+
+    raise IllegalMoveError, 'Illegal move' unless @from_piece.can_move_to?(@board, @from, @to)
   end
 
   # Performs the move in the board

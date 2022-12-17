@@ -26,7 +26,7 @@ class ChessGame
   # Make a move +from+ origin square +to+ destination sqaure in the current game instance
   # @attr move [Move] the move we want to add to the current game
   def add_move(move)
-    opponent = @current_game.turn == 'white' ? 'black' : 'white'
+    opponent = @current_game.turn.color == 'white' ? 'black' : 'white'
     @current_game.add_move(move)
 
     @winner = opponent if @current_game.checkmate?(@current_game.board, opponent)

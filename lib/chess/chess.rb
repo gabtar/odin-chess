@@ -10,6 +10,7 @@ require_relative './pieces/pawn'
 require_relative './pieces/rook'
 require_relative './board/board'
 require_relative './player'
+require_relative './computer_player'
 require_relative './moves/move_creator'
 require_relative './errors/illegal_move'
 require_relative './moves/normal_move'
@@ -28,14 +29,14 @@ require_relative './moves/en_passant_move'
 class Chess
   include MoveCreator
 
-  attr_reader :moves_list, :turn, :board
+  attr_reader :moves_list, :turn, :board, :white_player, :black_player
 
   def initialize(board, white_player, black_player)
     @board = board
     @moves_list = []
     @white_player = white_player
     @black_player = black_player
-    @turn = 'white'
+    @turn = @white_player
   end
 
   # Adds a valid move to the current game and updates the game status
@@ -55,13 +56,13 @@ class Chess
   def validate_move(from, to)
     piece_to_move = @board.get_piece_at(from)
 
-    raise IllegalMoveError, 'Invalid piece' if piece_to_move.nil? || piece_to_move.color != @turn
+    raise IllegalMoveError, 'Invalid piece' if piece_to_move.nil? || piece_to_move.color != @turn.color
     raise IllegalMoveError, 'Cannot put king in check' if will_put_my_king_in_check(from, to)
   end
 
   # Toggles the current player turn to move
   def switch_turn
-    @turn = @turn == 'white' ? 'black' : 'white'
+    @turn = @turn.color == 'white' ? @black_player : @white_player
   end
 
   # Saves the current game by serializing object to a YAML string
@@ -107,7 +108,7 @@ class Chess
   # @param yaml_string [String] the string representing the object saved with YAML.dump()
   def self.unserialize(yaml_string)
     YAML.safe_load(yaml_string,
-                   permitted_classes: [Chess, Board, Move, Player, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove, PawnCaptureMove, FirstPawnMove, EnPassantMove], aliases: true)
+                   permitted_classes: [Chess, Board, Move, Player, ComputerPlayer, Pawn, Knight, Rook, Bishop, King, Queen, NormalMove, PromotionMove, CaptureMove, CastleMove, PawnCaptureMove, FirstPawnMove, EnPassantMove], aliases: true)
   end
 
   private
@@ -124,7 +125,7 @@ class Chess
     begin
       move.validate
       move.execute
-      board_clone.in_check?(board_clone, @turn)
+      board_clone.in_check?(board_clone, @turn.color)
     rescue StandardError => e
       # It's an Illegal move -> cannot be added, so return true for now
       true

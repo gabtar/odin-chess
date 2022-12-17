@@ -7,16 +7,20 @@
 class SubMenuCommand
   attr_reader :name
 
-  def initialize(menu, submenu, name, window)
+  def initialize(menu, submenu, name, window, back_menu: false)
     @menu = menu
     @submenu = submenu
+    @original_options = menu.options
     @name = name
     @window = window
+    # Back command
+    @submenu.append(SubMenuCommand.new(@menu, @original_options, 'Back', @window)) if back_menu
   end
 
   def execute
-    @menu.options = @submenu.options
-    @menu.max_items = @submenu.options.length - 1
+    @menu.active_index = 0
+    @menu.options = @submenu
+    @menu.max_items = @submenu.length - 1
     @menu.render
   end
 end

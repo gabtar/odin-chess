@@ -10,7 +10,6 @@ require_relative './menu/command/load_command'
 require_relative './menu/command/enter_move_command'
 require_relative './menu/command/new_game_command'
 require_relative './menu/command/sub_menu_command'
-require_relative './menu/command/load_game_command'
 require_relative './menu/command/exit_command'
 require_relative './menu/command/save_command'
 require_relative './menu/menu_chess'
@@ -80,18 +79,33 @@ class GameTUI
       moves.box('|', '-')
 
       # Render initial screen
-      draw_multiline_string(board_status(@game.current_game), board)
+      draw_multiline_string("Welcome to odin chess", board)
       draw_multiline_string(moves_status(@game.current_game), moves, false)
 
-      new_game_menu = MenuChess.new(menu)
-      new_game_menu.add_option(EnterMoveCommand.new(@game, menu))
-      new_game_menu.add_option(SaveCommand.new(@game, menu))
-      new_game_menu.add_option(ExitCommand.new)
-
+      # Build the menu
       menu_class = MenuChess.new(menu)
-      switch_menu_command = SubMenuCommand.new(menu_class, new_game_menu, 'New game', menu)
-      menu_class.add_option(switch_menu_command)
-      menu_class.add_option(LoadGameCommand.new(menu_class, 'Load a game', @game, menu, switch_menu_command))
+
+      ingame_menu_options = [
+        EnterMoveCommand.new(@game, menu),
+        SaveCommand.new(@game, menu),
+        ExitCommand.new
+      ]
+
+      new_game_menu_options = [
+        NewGameCommand.new(menu_class, ingame_menu_options, '2 Player Game', menu, @game),
+        NewGameCommand.new(menu_class, ingame_menu_options, 'Play vs Computer', menu, @game, computer_player: true)
+      ]
+      switch_new_game_menu_command = SubMenuCommand.new(menu_class, new_game_menu_options, 'New Game', menu, back_menu: true)
+      switch_in_game_menu_command = SubMenuCommand.new(menu_class, ingame_menu_options, 'In game menu', menu, back_menu: true)
+
+      # Get saves entries for the load menu
+      saves_path = File.join(File.dirname(__FILE__), '../../saves')
+      options = Dir.each_child(saves_path)
+      load_menu_options = options.map { |file| LoadCommand.new(file.to_s, @game, switch_in_game_menu_command) }
+      switch_load_game_menu_command = SubMenuCommand.new(menu_class, load_menu_options, 'Load Game', menu, back_menu: true)
+
+      menu_class.add_option(switch_new_game_menu_command)
+      menu_class.add_option(switch_load_game_menu_command)
       menu_class.add_option(ExitCommand.new)
 
       menu_class.render
@@ -114,8 +128,6 @@ class GameTUI
         draw_multiline_string(moves_status(@game.current_game), moves, false)
 
       end
-
-      refresh
     ensure
       close_screen
     end
