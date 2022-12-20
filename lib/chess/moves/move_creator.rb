@@ -66,7 +66,9 @@ module MoveCreator
   def pawn_capture?(from, to, board)
     pawn_capture_distances = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
 
-    board.get_piece_at(from).is_a?(Pawn) && !board.get_piece_at(to).nil? && pawn_capture_distances.include?(board.calculate_distance_vector(from, to))
+    board.get_piece_at(from).is_a?(Pawn) && !board.get_piece_at(to).nil? && pawn_capture_distances.include?(board.calculate_distance_vector(
+                                                                                                              from, to
+                                                                                                            ))
   end
 
   # Detects if it's a capture move

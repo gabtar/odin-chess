@@ -12,10 +12,17 @@ class PawnCaptureMove < Move
 
     raise IllegalMoveError, 'Illegal move' if @to_piece.nil? || @to_piece.color == pawn_color
 
-    if pawn_color == 'white'
-      raise IllegalMoveError, 'Illegal piece move' unless @to_piece.color != pawn_color && white_captures_distances.include?(distance)
-    elsif pawn_color == 'black'
-      raise IllegalMoveError, 'Illegal piece move' unless  @to_piece.color != pawn_color && black_captures_distances.include?(distance)
+    case pawn_color
+    when 'white'
+      unless @to_piece.color != pawn_color && white_captures_distances.include?(distance)
+        raise IllegalMoveError,
+              'Illegal piece move'
+      end
+    when 'black'
+      unless @to_piece.color != pawn_color && black_captures_distances.include?(distance)
+        raise IllegalMoveError,
+              'Illegal piece move'
+      end
     end
   end
 

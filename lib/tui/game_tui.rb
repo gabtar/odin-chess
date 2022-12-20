@@ -79,7 +79,7 @@ class GameTUI
       moves.box('|', '-')
 
       # Render initial screen
-      draw_multiline_string("Welcome to odin chess", board)
+      draw_multiline_string('Welcome to odin chess', board)
       draw_multiline_string(moves_status(@game.current_game), moves, false)
 
       # Build the menu
@@ -92,17 +92,20 @@ class GameTUI
       ]
 
       new_game_menu_options = [
-        NewGameCommand.new(menu_class, ingame_menu_options, '2 Player Game', menu, @game),
+        NewGameCommand.new(menu_class, ingame_menu_options, '2 Players Game', menu, @game, computer_player: false),
         NewGameCommand.new(menu_class, ingame_menu_options, 'Play vs Computer', menu, @game, computer_player: true)
       ]
-      switch_new_game_menu_command = SubMenuCommand.new(menu_class, new_game_menu_options, 'New Game', menu, back_menu: true)
-      switch_in_game_menu_command = SubMenuCommand.new(menu_class, ingame_menu_options, 'In game menu', menu, back_menu: true)
+      switch_new_game_menu_command = SubMenuCommand.new(menu_class, new_game_menu_options, 'New Game', menu,
+                                                        back_menu: true)
+      switch_in_game_menu_command = SubMenuCommand.new(menu_class, ingame_menu_options, 'In game menu', menu,
+                                                       back_menu: true)
 
       # Get saves entries for the load menu
       saves_path = File.join(File.dirname(__FILE__), '../../saves')
       options = Dir.each_child(saves_path)
       load_menu_options = options.map { |file| LoadCommand.new(file.to_s, @game, switch_in_game_menu_command) }
-      switch_load_game_menu_command = SubMenuCommand.new(menu_class, load_menu_options, 'Load Game', menu, back_menu: true)
+      switch_load_game_menu_command = SubMenuCommand.new(menu_class, load_menu_options, 'Load Game', menu,
+                                                         back_menu: true)
 
       menu_class.add_option(switch_new_game_menu_command)
       menu_class.add_option(switch_load_game_menu_command)

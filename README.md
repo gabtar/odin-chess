@@ -12,9 +12,11 @@
 - [x] 2 Players game or vs AI
 - [x] End the game when checkmate opponent
 - [x] Fixes in curses UI / scrolling support?
-- [ ] Support for Stealmate(draw)
+- [x] Reset winner when creating new game in NewGameCommand
+- [x] Support for Stealmate(draw)
 - [ ] Three time repetition rule(draw)
 - [ ] Insuficient material rule(draw)
+- [ ] Fix remaining TODOs
 - [ ] Fix the moves list when exceeds the curses window height
 - [ ] UI when game ends
 - [ ] Improve algebraic notation

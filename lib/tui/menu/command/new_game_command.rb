@@ -20,7 +20,7 @@ class NewGameCommand < SubMenuCommand
 
   # Creates the game and swites to submenu(ingame menu)
   def execute
-    @game.current_game = create_new_game(computer_player: @computer_player)
+    @game.new_game(@computer_player)
     super
   end
 end

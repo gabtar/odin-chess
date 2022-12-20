@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 # Replaces the current window with a new menu
-# @attr name [MenuChess] the actual menu chess object
-# @attr name [MenuChess] the new menu that will be displayed after
+# @attr menu [MenuChess] the actual menu chess object
+# @attr submenu [Array] the array of command menu objects to be replaced in the menu
 # @attr name [String] the name that will be rendered in the menu
+# @attr window [Window] the Curses Window object that renders the menu
+# @attr back_menu [Boolean] if we want to add an option to create a back button on the menu
 class SubMenuCommand
   attr_reader :name
 

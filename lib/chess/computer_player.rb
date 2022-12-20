@@ -16,6 +16,7 @@ class ComputerPlayer < Player
 
   # Returns a random move
   def play_move
+    # TODO: check if its stealmate or something?
     loop do
       from = random_rank + random_file
       to = random_rank + random_file
@@ -23,7 +24,7 @@ class ComputerPlayer < Player
         move = create_move(from, to, @board)
         move.validate
         return move
-      rescue
+      rescue IllegalMoveError, InvalidCoordinateError
         # its invalid
         next
       end
@@ -41,4 +42,3 @@ class ComputerPlayer < Player
     ('1'..'8').to_a.sample
   end
 end
-

@@ -71,7 +71,8 @@ class Chess
     YAML.dump(self)
   end
 
-  # Checks if the passed +army+ on the passed +board+ is in checkmate(no legal moves)
+  # Checks if the passed +army+ on the passed +board+ is in checkmate
+  # (in check and with no legal moves)
   # @return [Boolean]
   def checkmate?(board, army)
     checkmate = false
@@ -102,6 +103,50 @@ class Chess
     end
 
     checkmate
+  end
+
+  # Checks if the passed +army+ on the passed +board+ is in stealmate(no legal moves)
+  # @return [Boolean]
+  def stealmate?(board, army)
+    return false if board.in_check?(board, army)
+
+    stealmate = true
+    coordinates = []
+    8.times do |number|
+      coordinates << ('a'..'h').to_a.map! { |rank| rank + (number + 1).to_s }
+    end
+
+    coordinates.flatten.each do |from|
+      piece = board.get_piece_at(from)
+
+      next if piece.nil? || piece.color != army
+
+      coordinates.flatten.each do |to|
+        next if from == to
+
+        move = create_move(from, to, board)
+        begin
+          validate_move(from, to)
+          move.validate
+          return false
+        rescue IllegalMoveError
+          stealmate = true
+        end
+      end
+    end
+
+    stealmate
+  end
+
+  # TODO, Threefold Repetition
+  # The original rule talks about the position being repeated 3 times
+  # The problem is that in the moves clases i only sotore a reference to the board
+  # And that reference is not the move position, just the actual board for the whole game
+  # Maybe i should change the board to a Position abstraction that only stores
+  # the pieces position before the move? And them compare against the position of the
+  # previous moves to validate if it's a threefold_repetition or not
+  def threefold_repetition?
+    raise NotImplementedError
   end
 
   # Loads a chess game previously saved

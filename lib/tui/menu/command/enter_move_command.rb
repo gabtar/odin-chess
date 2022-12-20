@@ -51,12 +51,10 @@ class EnterMoveCommand
 
       # If the opponent is a ComputerPlayer, perform the computer move
       loop do
-        begin
-          @game.add_move(@game.current_game.turn.play_move) if @game.current_game.turn.is_a?(ComputerPlayer)
-          break
-        rescue IllegalMoveError
-          next
-        end
+        @game.add_move(@game.current_game.turn.play_move) if @game.current_game.turn.is_a?(ComputerPlayer)
+        break
+      rescue IllegalMoveError
+        next
       end
     rescue StandardError => e
       display_message(e.message)

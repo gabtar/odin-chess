@@ -6,7 +6,7 @@ require_relative './move'
 class EnPassantMove < Move
   def validate
     raise IllegalMoveError, 'Illegal capture' unless @board.last_move.is_a?(FirstPawnMove)
-    raise IllegalMoveError, 'Illegal capture' if @board.last_move.to[0] != @to[0]
+    raise IllegalMoveError, 'Illegal capture' unless moved_to_same_rank?
   end
 
   # Performs the move in the board
@@ -20,5 +20,11 @@ class EnPassantMove < Move
   # @return [String] the move in long algebraic notation
   def long_algebraic_notation
     "#{@from_piece}#{@from}x#{@to}e.p."
+  end
+
+  private
+
+  def moved_to_same_rank?
+    @board.last_move.to[0] == @to[0]
   end
 end

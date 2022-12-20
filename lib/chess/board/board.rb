@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'deep_clone'
 
 require_relative '../errors/invalid_coordinate'
@@ -79,7 +80,8 @@ class Board
       @squares.flatten.each do |piece|
         next if piece.nil? || piece.color == army
 
-        return true if piece.can_move_to?(self, get_coordinate(piece), current_square) && !blocked_path?(get_coordinate(piece), current_square)
+        return true if piece.can_move_to?(self, get_coordinate(piece),
+                                          current_square) && !blocked_path?(get_coordinate(piece), current_square)
       end
       current_square = next_square(current_square, direction)
     end
@@ -89,7 +91,7 @@ class Board
   # Validates if the passed colour if current player is in check or not in the current position
   # @param army [String] the colour of the side we want to know if it's in check
   # @return [Boolean] true if its in check otherwise false
-  def in_check?(board, army)
+  def in_check?(_board, army)
     board_clone = DeepClone.clone(self)
     king = board_clone.squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
 

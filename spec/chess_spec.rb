@@ -7,7 +7,7 @@ require_relative '../lib/chess/pieces/bishop'
 require_relative '../lib/chess/chess'
 require_relative '../lib/chess/player'
 
-RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
+RSpec.describe Chess do
   describe '#add_move' do
     subject(:chess) { described_class.new(board, white_player, black_player) }
     let(:white_player) { instance_double('Player') }
@@ -77,7 +77,7 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
 
     context 'when it is whites turn' do
       it 'switches to blacks turn' do
-        allow(white_player).to receive(:color).and_return('white') 
+        allow(white_player).to receive(:color).and_return('white')
         chess.switch_turn
         expect(chess.turn).to eql(black_player)
       end
@@ -85,8 +85,8 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
 
     context 'when it is blacks turn' do
       it 'switches to whites turn' do
-        allow(white_player).to receive(:color).and_return('white') 
-        allow(black_player).to receive(:color).and_return('black') 
+        allow(white_player).to receive(:color).and_return('white')
+        allow(black_player).to receive(:color).and_return('black')
         chess.switch_turn
         chess.switch_turn
         expect(chess.turn).to eql(white_player)
@@ -159,6 +159,45 @@ RSpec.describe Chess do # rubocop:disable Metrics/ClassLength
 
         expect(chess.turn).to eq(black_player)
         expect(chess.checkmate?(board, 'black')).to be_falsy
+      end
+    end
+  end
+
+  describe '#stealmate?' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { Board.new }
+
+    context 'when white is in steal mate' do
+      it 'returns true' do
+        board.add_piece(King.new('white'), 'a8')
+        board.add_piece(Queen.new('black'), 'b6')
+
+        expect(chess.turn).to eq(white_player)
+        expect(chess.stealmate?(board, 'white')).to be_truthy
+      end
+    end
+
+    context 'when white is in not steal mate' do
+      it 'returns true' do
+        board.add_piece(King.new('white'), 'h8')
+        board.add_piece(Queen.new('black'), 'b6')
+
+        expect(chess.turn).to eq(white_player)
+        expect(chess.stealmate?(board, 'white')).to be_falsy
+      end
+    end
+
+    context 'when a white pawn move can avoid stealmate' do
+      it 'returns false' do
+        board.add_piece(King.new('white'), 'a8')
+        board.add_piece(Queen.new('black'), 'b6')
+
+        board.add_piece(Pawn.new('white'), 'e7')
+
+        expect(chess.turn).to eq(white_player)
+        expect(chess.stealmate?(board, 'white')).to be_falsy
       end
     end
   end

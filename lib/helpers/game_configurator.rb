@@ -47,12 +47,10 @@ module GameConfigurator
 
     # Make the first move if computer is white
     loop do
-      begin
-        game.add_move(game.turn.play_move) if white_player.is_a?(ComputerPlayer)
-        break
-      rescue IllegalMoveError
-        next
-      end
+      game.add_move(game.turn.play_move) if white_player.is_a?(ComputerPlayer)
+      break
+    rescue IllegalMoveError
+      next
     end
 
     game

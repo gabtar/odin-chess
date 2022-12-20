@@ -2,8 +2,7 @@
 
 # Wrapper for the chess object for handling games in the TUI
 class ChessGame
-  attr_accessor :current_game
-  attr_reader :winner
+  attr_reader :winner, :current_game
 
   include GameConfigurator
 
@@ -13,8 +12,10 @@ class ChessGame
   end
 
   # Creates a new chess game between 2 players
-  def new_game
-    @current_game = create_new_game
+  # @attr play_vs_computer [Boolean] allows 1 ramdom player to be a computer player
+  def new_game(play_vs_computer)
+    @winner = nil
+    @current_game = create_new_game(computer_player: play_vs_computer)
   end
 
   # Loads a game from the specified yaml string
@@ -30,6 +31,7 @@ class ChessGame
     @current_game.add_move(move)
 
     @winner = opponent if @current_game.checkmate?(@current_game.board, opponent)
+    @winner = 'Draw' if @current_game.stealmate?(@current_game.board, opponent)
   end
 
   # Serializes the current game instance into a yaml string
