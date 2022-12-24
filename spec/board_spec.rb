@@ -186,8 +186,7 @@ RSpec.describe Board do
   end
 
   describe '#in_check?' do
-    subject(:chess) { described_class.new }
-    let(:board) { Board.new }
+    subject(:board) { described_class.new }
     let(:black_king) { King.new('black') }
     let(:white_pawn) { Pawn.new('white') }
     let(:white_bishop) { Bishop.new('white') }
@@ -207,12 +206,28 @@ RSpec.describe Board do
         expect(board.in_check?(board, 'black')).to be_truthy
       end
     end
+  end
 
-    context 'when the black king is by a white bishop' do
-      it 'returns true' do
+  describe '#to_fen' do
+    subject(:board) { described_class.new }
+    let(:black_king) { King.new('black') }
+    let(:white_king) { King.new('white') }
+    let(:white_rook) { Rook.new('white') }
+    let(:black_rook) { Rook.new('black') }
+
+    context 'when there no pieces in the board' do
+      it 'returns 8/8/8/8/8/8/8/8 w -' do
+        expect(board.to_fen).to eq('8/8/8/8/8/8/8/8 w - -')
+      end
+    end
+
+    context 'when there are a white king on e1 and a black king on e8' do
+      it 'returns r3k3/8/8/8/8/8/8/4K2R w Kq -' do
         board.add_piece(black_king, 'e8')
-        board.add_piece(white_bishop, 'a4')
-        expect(board.in_check?(board, 'black')).to be_truthy
+        board.add_piece(white_king, 'e1')
+        board.add_piece(white_rook, 'h1')
+        board.add_piece(black_rook, 'a8')
+        expect(board.to_fen).to eq('r3k3/8/8/8/8/8/8/4K2R w Kq -')
       end
     end
   end

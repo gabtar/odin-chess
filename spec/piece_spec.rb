@@ -5,7 +5,7 @@ require_relative '../lib/chess/pieces/pawn'
 
 RSpec.describe Piece do
   describe '#same_color?' do
-    subject(:black_piece) { described_class.new('black', '♟') }
+    subject(:black_piece) { described_class.new('black', '♟', 'p') }
     let(:pawn) { instance_double(Piece) }
 
     context 'when comparing with same color piece' do
@@ -24,8 +24,8 @@ RSpec.describe Piece do
   end
 
   describe '#to_s' do
-    let(:white_pawn) { described_class.new('white', '♙') }
-    let(:black_pawn) { described_class.new('black', '♟') }
+    let(:white_pawn) { described_class.new('white', '♙', 'p') }
+    let(:black_pawn) { described_class.new('black', '♟', 'P') }
 
     context 'when its a white pawn' do
       it 'returns the white pawn symbol (♙)' do

@@ -4,9 +4,13 @@ require_relative './move'
 
 # A move when a Pawn is moved 2 squares ahead
 class FirstPawnMove < Move
+  attr_reader :en_passant_target_square
+
   def initialize(from, to, board)
     super(from, to, board)
     @pawn_color = @from_piece.color
+    # For now for fen string notation only
+    @en_passant_target_square = "#{@from[0]}#{(@to[1].to_i + @from[1].to_i) / 2}"
   end
 
   def validate

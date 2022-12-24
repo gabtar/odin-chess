@@ -32,6 +32,7 @@ class ChessGame
 
     @winner = opponent if @current_game.checkmate?(@current_game.board, opponent)
     @winner = 'Draw' if @current_game.stealmate?(@current_game.board, opponent)
+    @winner = 'Draw by repetition' if @current_game.threefold_repetition?
   end
 
   # Serializes the current game instance into a yaml string

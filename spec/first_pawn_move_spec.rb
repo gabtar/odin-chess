@@ -11,6 +11,7 @@ RSpec.describe FirstPawnMove do
     context 'when moving from e2 to e4' do
       it 'moves the pawn in the board from e2 to e4' do
         allow(white_pawn).to receive(:color).and_return('white')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         board.add_piece(white_pawn, 'e2')
         move = FirstPawnMove.new('e2', 'e4', board)
         move.execute
@@ -29,6 +30,8 @@ RSpec.describe FirstPawnMove do
         allow(board).to receive(:get_piece_at).with('e2').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('e4').and_return(nil)
         allow(board).to receive(:blocked_path?).with('e2', 'e4').and_return(false)
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
+        allow(board).to receive(:to_fen).and_return('')
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e2', 'e4').and_return(true)
         allow(white_pawn).to receive(:color).and_return('white')
         move = FirstPawnMove.new('e2', 'e4', board)
@@ -42,6 +45,8 @@ RSpec.describe FirstPawnMove do
         allow(board).to receive(:get_piece_at).with('e4').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('e6').and_return(nil)
         allow(board).to receive(:blocked_path?).with('e4', 'e6').and_return(false)
+        allow(board).to receive(:to_fen).and_return('')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e4', 'e6').and_return(true)
         allow(white_pawn).to receive(:color).and_return('white')
         move = FirstPawnMove.new('e4', 'e6', board)
@@ -55,6 +60,7 @@ RSpec.describe FirstPawnMove do
         allow(board).to receive(:get_piece_at).with('e2').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('e4').and_return(nil)
         allow(board).to receive(:blocked_path?).with('e2', 'e4').and_return(true)
+        allow(board).to receive(:to_fen).and_return('')
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e4', 'e4').and_return(true)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e2', 'e4').and_return(true)
         allow(white_pawn).to receive(:color).and_return('white')
@@ -69,6 +75,7 @@ RSpec.describe FirstPawnMove do
         allow(board).to receive(:get_piece_at).with('e2').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('e4').and_return(black_pawn)
         allow(board).to receive(:blocked_path?).with('e2', 'e4').and_return(false)
+        allow(board).to receive(:to_fen).and_return('')
         allow(black_pawn).to receive(:color).and_return('black')
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e4', 'e4').and_return(true)
         allow(white_pawn).to receive(:can_move_to?).with(board, 'e2', 'e4').and_return(true)
@@ -87,6 +94,7 @@ RSpec.describe FirstPawnMove do
     context 'when moving from e2 to e4' do
       it 'returns e2e4' do
         allow(white_pawn).to receive(:color).and_return('white')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         board.add_piece(white_pawn, 'e2')
         move = FirstPawnMove.new('e2', 'e4', board)
         expect(move.long_algebraic_notation).to eq("#{white_pawn}e2e4")

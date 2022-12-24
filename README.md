@@ -14,7 +14,7 @@
 - [x] Fixes in curses UI / scrolling support?
 - [x] Reset winner when creating new game in NewGameCommand
 - [x] Support for Stealmate(draw)
-- [ ] Three time repetition rule(draw)
+- [x] Three time repetition rule(draw)
 - [ ] Insuficient material rule(draw)
 - [ ] Fix remaining TODOs
 - [ ] Fix the moves list when exceeds the curses window height

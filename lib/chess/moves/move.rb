@@ -6,7 +6,7 @@
 # @attr to [String] the ending position square
 # @attr board [Board] the board with the position before the move
 class Move
-  attr_accessor :from, :to
+  attr_accessor :from, :to, :fen_string
 
   def initialize(from, to, board)
     @from = from
@@ -14,5 +14,6 @@ class Move
     @board = board
     @from_piece = @board.get_piece_at(@from)
     @to_piece = @board.get_piece_at(@to)
+    @fen_string = @board.to_fen
   end
 end

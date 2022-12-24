@@ -8,7 +8,8 @@ require_relative './piece'
 class Knight < Piece
   def initialize(color)
     symbol = color == 'white' ? '♘' : '♞'
-    super(color, symbol)
+    fen_representation = color == 'white' ? 'N' : 'n'
+    super(color, symbol, fen_representation)
     # default move = jumps in L shape move
     @possible_directions = [[2, 1], [1, 2], [-1, 2], [-2, 1], [-2, -1], [-1, -2], [1, -2], [2, -1]]
   end

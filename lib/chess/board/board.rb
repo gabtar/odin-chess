@@ -11,10 +11,11 @@ class Board
   include MoveCreator
 
   attr_reader :squares
-  attr_accessor :last_move
+  attr_accessor :last_move, :to_move
 
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
+    @to_move = 'white'
   end
 
   # Adds a piece to the board
@@ -116,6 +117,44 @@ class Board
     false
   end
 
+  # Returns the current board as a FEN string
+  # Only returns the first part of FEN without the halfmove clock and without
+  # the fullmove number
+  # Used for checking in threefold_repetition? method
+  # @return [String] the actual position of the board
+  def to_fen
+    # rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
+    fen_string = ''
+
+    # Pieces position
+    @squares.reverse.each_with_index do |row, index|
+      blank_squares = 0
+      row.each do |piece|
+        if piece.nil?
+          blank_squares += 1
+        else
+          fen_string += blank_squares.to_s unless blank_squares.zero?
+          fen_string += piece.fen_representation
+          blank_squares = 0
+        end
+      end
+      fen_string += blank_squares.to_s unless blank_squares.zero?
+      fen_string += '/' unless index == 7
+    end
+
+    # Side to move
+    fen_string += " #{@to_move[0]}"
+
+    # Castling availability
+    fen_string += " #{available_castles}"
+
+    # En passant target square
+    en_passant_target_square = @last_move.is_a?(FirstPawnMove) ? @last_move.en_passant_target_square : nil
+    fen_string += " #{en_passant_target_square.nil? ? '-' : en_passant_target_square}"
+
+    fen_string
+  end
+
   # Returns the position in the +squares+ array for the given coordinate
   # @param coordinate [String] the board coordinate eg. 'a1'
   # @return [Array] a coordinates array containing [row, column] values
@@ -165,5 +204,37 @@ class Board
     next_file = file + direction[1]
 
     "#{(next_file + 97).chr}#{next_rank + 1}"
+  end
+
+  # Returns the available castles in the position for FEN notation
+  # Checks only if the castle pieces havent been already moved
+  # It doesn't matter if its legal or not, FEN notation just
+  # only determines if it's available
+  def available_castles
+    available_castles = ''
+    # For white
+    king = get_piece_at('e1')
+
+    if king.is_a?(King) && king.color == 'white' && !king.moved
+      # Kingside
+      rook = get_piece_at('h1')
+      available_castles += 'K' if rook.is_a?(Rook) && rook.color == 'white' && !rook.moved
+      # Queenside
+      rook = get_piece_at('a1')
+      available_castles += 'Q' if rook.is_a?(Rook) && rook.color == 'white' && !rook.moved
+    end
+
+    # For black
+    king = get_piece_at('e8')
+    if king.is_a?(King) && king.color == 'black' && !king.moved
+      # Kingside
+      rook = get_piece_at('h8')
+      available_castles += 'k' if rook.is_a?(Rook) && rook.color == 'black' && !rook.moved
+      # Queenside
+      rook = get_piece_at('a8')
+      available_castles += 'q' if rook.is_a?(Rook) && rook.color == 'black' && !rook.moved
+    end
+
+    available_castles.empty? ? '-' : available_castles
   end
 end

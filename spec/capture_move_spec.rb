@@ -10,6 +10,8 @@ RSpec.describe CaptureMove do
 
     context 'when capturing from e2 to e3' do
       it 'moves the pawn in the board from e2 to e3' do
+        allow(black_pawn).to receive(:fen_representation).and_return('p')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         board.add_piece(white_pawn, 'e2')
         board.add_piece(black_pawn, 'e3')
         move = CaptureMove.new('e2', 'e3', board)
@@ -27,6 +29,8 @@ RSpec.describe CaptureMove do
 
     context 'when moving from e2 to e3' do
       it 'returns e2e4' do
+        allow(black_pawn).to receive(:fen_representation).and_return('p')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         board.add_piece(white_pawn, 'e2')
         board.add_piece(black_pawn, 'e3')
         move = CaptureMove.new('e2', 'e3', board)

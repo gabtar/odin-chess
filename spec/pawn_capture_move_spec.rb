@@ -14,6 +14,7 @@ RSpec.describe PawnCaptureMove do
       it 'moves the pawn in the board from e2 to d3 and removes the piece at d3' do
         board.add_piece(white_pawn, 'e2')
         allow(white_pawn).to receive(:color).and_return('white')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         move = PawnCaptureMove.new('e2', 'd3', board)
         move.execute
         expect(board.get_piece_at('d3')).to eq(white_pawn)
@@ -30,7 +31,9 @@ RSpec.describe PawnCaptureMove do
     context 'when validate capturing a bishop on a4 from b3' do
       it 'does not raises IllegalMoveError' do
         board.add_piece(black_knight, 'a4')
+        allow(black_knight).to receive(:fen_representation).and_return('k')
         board.add_piece(white_pawn, 'b3')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         allow(white_pawn).to receive(:color).and_return('white')
         allow(black_knight).to receive(:color).and_return('black')
         allow(white_pawn).to receive(:can_move_to?).with(board, 'b3', 'a4').and_return(true)
@@ -47,6 +50,7 @@ RSpec.describe PawnCaptureMove do
     context 'when capturing from e2 to d3' do
       it 'returns e2e4' do
         board.add_piece(white_pawn, 'e2')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         move = PawnCaptureMove.new('e2', 'd3', board)
         expect(move.long_algebraic_notation).to eq('e2xd3')
       end

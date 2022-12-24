@@ -8,7 +8,8 @@ require_relative './piece'
 class Pawn < Piece
   def initialize(color)
     symbol = color == 'white' ? '♙' : '♟'
-    super(color, symbol)
+    fen_representation = color == 'white' ? 'P' : 'p'
+    super(color, symbol, fen_representation)
     # default move = +1 rank, same file
     # +2 ranks on first move
     # [-1, 1] and [1, 1] only when capturing

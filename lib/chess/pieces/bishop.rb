@@ -11,7 +11,8 @@ class Bishop < Piece
 
   def initialize(color)
     symbol = color == 'white' ? '♗' : '♝'
-    super(color, symbol)
+    fen_representation = color == 'white' ? 'B' : 'b'
+    super(color, symbol, fen_representation)
     # default move = diagonals
     # directions!
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1]]

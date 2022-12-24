@@ -4,11 +4,12 @@
 #
 # @attr [String] color piece color (eg. black or white)
 class Piece
-  attr_reader :color
+  attr_reader :color, :fen_representation
 
-  def initialize(color, symbol)
+  def initialize(color, symbol, fen_representation)
     @color = color
     @symbol = symbol
+    @fen_representation = fen_representation
   end
 
   # Indicates if the +other_piece+ is a same color piece or not.

@@ -44,10 +44,15 @@ class Chess
   def add_move(move)
     move.validate
     validate_move(move.from, move.to) # TODO, remove from here to move.validate method
+    # Set if a rook or a king has been moved
+    piece_to_move = @board.get_piece_at(move.from)
+    piece_to_move.moved = true if piece_to_move.is_a?(King) || piece_to_move.is_a?(Rook)
+
     move.execute
     @moves_list << move
-    @board.last_move = move
     switch_turn
+    @board.last_move = move
+    @board.to_move = @turn.color
   end
 
   # Validates if the passed move +from+ square +to+ square is a legal chess move
@@ -138,15 +143,12 @@ class Chess
     stealmate
   end
 
-  # TODO, Threefold Repetition
-  # The original rule talks about the position being repeated 3 times
-  # The problem is that in the moves clases i only sotore a reference to the board
-  # And that reference is not the move position, just the actual board for the whole game
-  # Maybe i should change the board to a Position abstraction that only stores
-  # the pieces position before the move? And them compare against the position of the
-  # previous moves to validate if it's a threefold_repetition or not
+  # Validates if last move position is a threefold repetition
   def threefold_repetition?
-    raise NotImplementedError
+    # Check if last position has been repeated for at least 3 times
+    last_postion = @moves_list.last.fen_string
+
+    @moves_list.select { |move| move.fen_string == last_postion }.length >= 2
   end
 
   # Loads a chess game previously saved

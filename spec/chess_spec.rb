@@ -25,7 +25,9 @@ RSpec.describe Chess do
       it 'it adds the move to the game' do
         board.add_piece(white_pawn, 'a2')
         allow(white_pawn).to receive(:can_move_to?).with(any_args).and_return(true)
-        allow(white_player).to receive(:color).and_return('white')
+        allow(white_player).to receive(:color).exactly(3).times.and_return('white')
+        allow(black_player).to receive(:color).and_return('black')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         chess.add_move(move)
         expect(chess.moves_list).to have_attributes(size: (be > 0))
       end
@@ -36,6 +38,7 @@ RSpec.describe Chess do
 
       it 'raises IllegalMoveError' do
         board.add_piece(white_pawn, 'a1')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
         allow(white_pawn).to receive(:can_move_to?).with(any_args).and_return(false)
         expect { chess.add_move(move) }.to raise_error(IllegalMoveError)
       end
@@ -51,6 +54,7 @@ RSpec.describe Chess do
 
     before :each do
       allow(white_pawn).to receive(:color).and_return('white')
+      allow(white_pawn).to receive(:fen_representation).and_return('P')
     end
 
     context 'when the move puts in check own king' do

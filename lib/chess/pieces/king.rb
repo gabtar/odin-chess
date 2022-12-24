@@ -7,12 +7,16 @@ require_relative './piece'
 #
 # @attr [String] color piece color(eg. black or white)
 class King < Piece
+  attr_accessor :moved
+
   def initialize(color)
     symbol = color == 'white' ? '♔' : '♚'
-    super(color, symbol)
+    fen_representation = color == 'white' ? 'K' : 'k'
+    super(color, symbol, fen_representation)
     # default move = horizontal + vertical + diagonals
     # but only 1 square at a time
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]]
+    @moved = false
   end
 
   # Indicates if the King can move +from+ specified square +to+ destination

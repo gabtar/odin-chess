@@ -14,6 +14,8 @@ RSpec.describe EnPassantMove do
         # TODO, mocks
         last_move_board.add_piece(white_pawn, 'd2')
         allow(white_pawn).to receive(:color).and_return('white')
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
+        allow(black_pawn).to receive(:fen_representation).and_return('p')
         board.add_piece(black_pawn, 'e4')
         board.add_piece(white_pawn, 'd4')
         board.last_move = FirstPawnMove.new('d2', 'd4', last_move_board)
@@ -32,10 +34,16 @@ RSpec.describe EnPassantMove do
     let(:white_pawn) { instance_double('Pawn') }
     let(:black_pawn) { instance_double('Pawn') }
 
+    before :each do
+      allow(white_pawn).to receive(:fen_representation).and_return('P')
+      allow(black_pawn).to receive(:fen_representation).and_return('p')
+    end
+
     context 'when its not after a first pawn move' do
       it 'raises IllegalMoveError' do
         allow(board).to receive(:get_piece_at).with('f5').and_return(white_pawn)
         allow(board).to receive(:get_piece_at).with('g6').and_return(nil)
+        allow(board).to receive(:to_fen).and_return('')
         allow(board).to receive(:last_move).and_return(NormalMove.new('f5', 'g6', board))
 
         expect { move.validate }.to raise_error(IllegalMoveError)
@@ -50,6 +58,7 @@ RSpec.describe EnPassantMove do
         allow(board).to receive(:get_piece_at).with('g6').and_return(nil)
         allow(board).to receive(:get_piece_at).with('e7').and_return(black_pawn)
         allow(board).to receive(:get_piece_at).with('e5').and_return(nil)
+        allow(board).to receive(:to_fen).and_return('')
         allow(board).to receive(:last_move).and_return(FirstPawnMove.new('e7', 'e5', last_move_board))
 
         expect { move.validate }.to raise_error(IllegalMoveError)
@@ -63,6 +72,8 @@ RSpec.describe EnPassantMove do
     let(:black_pawn) { instance_double('Pawn') }
     context 'when moving from e4 to d3' do
       it 'returns e2e4' do
+        allow(white_pawn).to receive(:fen_representation).and_return('P')
+        allow(black_pawn).to receive(:fen_representation).and_return('p')
         board.add_piece(black_pawn, 'e4')
         move = EnPassantMove.new('e4', 'd3', board)
         expect(move.long_algebraic_notation).to eq("#{black_pawn}e4xd3e.p.")

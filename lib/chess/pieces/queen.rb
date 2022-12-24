@@ -11,7 +11,8 @@ class Queen < Piece
 
   def initialize(color)
     symbol = color == 'white' ? '♕' : '♛'
-    super(color, symbol)
+    fen_representation = color == 'white' ? 'Q' : 'q'
+    super(color, symbol, fen_representation)
     # default move = horizontal + vertical + diagonals
     @possible_directions = [[1, 1], [-1, 1], [-1, -1], [1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]]
   end
