@@ -80,29 +80,25 @@ class Chess
   # (in check and with no legal moves)
   # @return [Boolean]
   def checkmate?(board, army)
+    return false unless board.in_check?(board, army)
+
     checkmate = false
-    if board.in_check?(board, army)
-      coordinates = []
-      8.times do |number|
-        coordinates << ('a'..'h').to_a.map! { |rank| rank + (number + 1).to_s }
-      end
-      coordinates.flatten.each do |from|
-        piece = board.get_piece_at(from)
+    coordinates = []
+    8.times do |number|
+      coordinates << ('a'..'h').to_a.map! { |rank| rank + (number + 1).to_s }
+    end
 
-        next if piece.nil? || piece.color != army
+    board.pieces(army).each do |piece|
+      from = board.get_coordinate(piece)
 
-        coordinates.flatten.each do |to|
-          next if from == to
-
-          # TODO, if queening
-          move = create_move(from, to, board)
-          begin
-            validate_move(from, to)
-            move.validate
-            return false
-          rescue IllegalMoveError
-            checkmate = true
-          end
+      coordinates.flatten.each do |to|
+        move = create_move(from, to, board)
+        begin
+          validate_move(from, to)
+          move.validate
+          return false
+        rescue IllegalMoveError
+          checkmate = true
         end
       end
     end
@@ -121,14 +117,10 @@ class Chess
       coordinates << ('a'..'h').to_a.map! { |rank| rank + (number + 1).to_s }
     end
 
-    coordinates.flatten.each do |from|
-      piece = board.get_piece_at(from)
-
-      next if piece.nil? || piece.color != army
+    board.pieces(army).each do |piece|
+      from = board.get_coordinate(piece)
 
       coordinates.flatten.each do |to|
-        next if from == to
-
         move = create_move(from, to, board)
         begin
           validate_move(from, to)
@@ -149,6 +141,26 @@ class Chess
     last_postion = @moves_list.last.fen_string
 
     @moves_list.select { |move| move.fen_string == last_postion }.length >= 2
+  end
+
+  # Detrmines if the passed +board+ position is a draw by insuficient material
+  # to checkmate the opponent of both sides
+  def insuficient_material?(board)
+    # Checks any of these for both sides
+    # - A lone king
+    # - A king and a bishop
+    # - A king and a knight
+    white_pieces = board.pieces('white')
+    black_pieces = board.pieces('black')
+
+    return true if white_pieces.length == 1 && black_pieces.length == 1
+    return false if white_pieces.length > 2 || black_pieces.length > 2
+
+    # One piece must be the king, so the other must be either a bishop or a knight
+    black_insuficient_material = !black_pieces.select { |piece| piece.is_a?(Knight) || piece.is_a?(Bishop) }.empty?
+    white_insuficient_material = !white_pieces.select { |piece| piece.is_a?(Knight) || piece.is_a?(Bishop) }.empty?
+
+    black_insuficient_material && white_insuficient_material
   end
 
   # Loads a chess game previously saved

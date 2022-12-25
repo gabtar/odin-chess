@@ -4,11 +4,17 @@ require_relative './move'
 
 # A castle move in chess
 class CastleMove < Move
+  def initialize(from, to, board)
+    super(from, to, board)
+    @rook_square = short? ? "h#{@from[1]}" : "a#{@from[1]}"
+    @rook = @board.get_piece_at(@rook_square)
+  end
+
   def validate
-    # TODO, check that for the king and rook is the first move, maybe a flag on the king?
+    raise IllegalMoveError, 'King or Rook already moved' if @from_piece.moved || @rook.nil? || @rook.moved
     raise IllegalMoveError, 'Illegal move' if @board.in_check?(@board, @from_piece.color)
     raise IllegalMoveError, 'Invalid castle' if @board.path_attacked?(@from, @to, @from_piece.color)
-    raise IllegalMoveError, 'Path blocked' if @board.blocked_path?(@from, @to)
+    raise IllegalMoveError, 'Path blocked' if @board.blocked_path?(@from, @rook_square)
   end
 
   # Performs the move in the board
@@ -18,10 +24,9 @@ class CastleMove < Move
     @board.add_piece(@from_piece, @to)
 
     # Move the rook
-    rook_square = short? ? "h#{@from[1]}" : "a#{@from[1]}"
-    rook = @board.get_piece_at(rook_square)
+    rook = @board.get_piece_at(@rook_square)
     rook_destination = short? ? "f#{@from[1]}" : "d#{@from[1]}"
-    @board.add_piece(nil, rook_square)
+    @board.add_piece(nil, @rook_square)
     @board.add_piece(rook, rook_destination)
   end
 

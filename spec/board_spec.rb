@@ -231,4 +231,34 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe '#pieces' do
+    subject(:board) { described_class.new }
+    let(:black_pawn) { instance_double(Pawn) }
+    let(:black_king) { instance_double(King) }
+    let(:white_bishop) { instance_double(Bishop) }
+
+    context 'when there are a black pawn and a black king in the board' do
+      it 'returns an array of with the black pawn a the black king' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(black_pawn, 'e7')
+        allow(black_pawn).to receive(:color).and_return('black')
+        allow(black_king).to receive(:color).and_return('black')
+        expect(board.pieces('black')).to include(black_pawn, black_king)
+      end
+    end
+
+    context 'when there are a black pawn and a black king in the board and a white bishop' do
+      it 'returns an array of with the black pawn a the black king' do
+        board.add_piece(black_king, 'e8')
+        board.add_piece(black_pawn, 'e7')
+        allow(black_pawn).to receive(:color).and_return('black')
+        allow(black_king).to receive(:color).and_return('black')
+        allow(white_bishop).to receive(:color).and_return('white')
+        black_pieces = board.pieces('black')
+        expect(black_pieces).to include(black_pawn, black_king)
+        expect(black_pieces).not_to include(white_bishop)
+      end
+    end
+  end
 end

@@ -32,9 +32,9 @@ class MenuChess
     @window.clear
     @window.box('|', '-')
 
-    # @options.each_with_index do |element, index|
     @options.slice(start, window_height - 2).each_with_index do |element, index|
       name_length = element.name.length
+      # Todo check if savegame name exceeds the window length
       surround_spaces = ' ' * ((@window.maxx - name_length - 2) / 2)
       aditional_space = name_length.odd? ? ' ' : ''
       @window.setpos(index + 1, 1)

@@ -94,15 +94,14 @@ class Board
   # @return [Boolean] true if its in check otherwise false
   def in_check?(_board, army)
     board_clone = DeepClone.clone(self)
-    king = board_clone.squares.flatten.select { |piece| !piece.nil? && piece.color == army && piece.is_a?(King) }.first
+    opponent_pieces = board_clone.pieces(army == 'white' ? 'black' : 'white')
+    king = board_clone.pieces(army).select { |piece| piece.is_a?(King) }.first
 
-    board_clone.squares.flatten.each do |piece|
-      next if piece.nil? || piece.color == army
-
-      # Look for a piece that is attacking the king
+    # Refactor with pieces method
+    opponent_pieces.each do |piece|
       from = board_clone.get_coordinate(piece)
-      move = create_move(from, board_clone.get_coordinate(king), board_clone)
 
+      move = create_move(from, board_clone.get_coordinate(king), board_clone)
       begin
         # Found a move that can capture the king
         move.validate
@@ -113,7 +112,6 @@ class Board
         next
       end
     end
-
     false
   end
 
@@ -153,6 +151,13 @@ class Board
     fen_string += " #{en_passant_target_square.nil? ? '-' : en_passant_target_square}"
 
     fen_string
+  end
+
+  # Returns the pieces of the passed +army+ on the board
+  # @param army [String] the color of the army the pieces we want
+  # @return [Array] an array of containing all pieces on the board of the army
+  def pieces(army)
+    @squares.flatten.select { |piece| !piece.nil? && piece.color == army }
   end
 
   # Returns the position in the +squares+ array for the given coordinate

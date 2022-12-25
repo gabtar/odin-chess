@@ -352,4 +352,41 @@ RSpec.describe Chess do
       end
     end
   end
+
+  context '#insuficient_material?' do
+    subject(:chess) { described_class.new(board, white_player, black_player) }
+    let(:white_player) { Player.new('white') }
+    let(:black_player) { Player.new('black') }
+    let(:board) { Board.new }
+    let(:white_king) { King.new('white') }
+    let(:black_king) { King.new('black') }
+    let(:black_rook) { Rook.new('black') }
+
+    context 'when there are two kings on the board' do
+      it 'returns true' do
+        board.add_piece(white_king, 'e1')
+        board.add_piece(black_king, 'e8')
+        expect(chess.insuficient_material?(board)).to be_truthy
+      end
+    end
+
+    context 'when there are two kings and a rook on the board' do
+      it 'returns false' do
+        board.add_piece(white_king, 'e1')
+        board.add_piece(black_king, 'e8')
+        board.add_piece(black_rook, 'h8')
+        expect(chess.insuficient_material?(board)).to be_falsy
+      end
+    end
+
+    context 'when there are two kings and a white knight and a black bishop' do
+      it 'returns true' do
+        board.add_piece(white_king, 'e1')
+        board.add_piece(black_king, 'e8')
+        board.add_piece(Knight.new('black'), 'h8')
+        board.add_piece(Bishop.new('white'), 'a1')
+        expect(chess.insuficient_material?(board)).to be_truthy
+      end
+    end
+  end
 end
