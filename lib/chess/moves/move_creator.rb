@@ -14,7 +14,7 @@ module MoveCreator
   # @attr to [String] the ending position square
   # @attr board [Board] the board with the position before the move
   # @return [Move] a Move object for the passed coordinates in the passed +board+
-  def create_move(from, to, board, piece = nil)
+  def create_move(from, to, board, piece = Queen.new(board.to_move))
     return CastleMove.new(from, to, board) if castle?(from, to, board)
 
     return PromotionMove.new(from, to, board, piece) if promotion?(from, to, board)
@@ -27,7 +27,6 @@ module MoveCreator
 
     return CaptureMove.new(from, to, board) if capture?(from, to, board)
 
-    # TODO, if from piece.nil? -> Raise IllegalMoveError?
     NormalMove.new(from, to, board)
   end
 

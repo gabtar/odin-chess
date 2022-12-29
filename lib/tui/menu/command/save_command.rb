@@ -17,7 +17,6 @@ class SaveCommand
     filename = input_move('Enter filename: ')
     Dir.mkdir('saves') unless Dir.exist?('saves')
     File.open(File.expand_path("./saves/#{filename}.yml"), 'w') { |file| file.puts @game.serialize }
-    # Todo display game saved!
     Curses.curs_set(0) # Show cursor
     display_message('Game saved!')
     @window.refresh

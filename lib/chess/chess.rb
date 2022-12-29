@@ -43,26 +43,31 @@ class Chess
   # @attr move [Move] the move we want to add to the current game
   def add_move(move)
     move.validate
-    validate_move(move.from, move.to) # TODO, remove from here to move.validate method
+    validate_move_turn(move)
+    validate_not_results_in_check_for_own_king(move)
     # Set if a rook or a king has been moved
     piece_to_move = @board.get_piece_at(move.from)
     piece_to_move.moved = true if piece_to_move.is_a?(King) || piece_to_move.is_a?(Rook)
 
     move.execute
+    generate_notation(move)
+
     @moves_list << move
     switch_turn
     @board.last_move = move
     @board.to_move = @turn.color
   end
 
-  # Validates if the passed move +from+ square +to+ square is a legal chess move
-  # @param from [String] the starting square
-  # @param to [String] the destination square
-  def validate_move(from, to)
-    piece_to_move = @board.get_piece_at(from)
+  # Validates if the passed +move+ is of a piece of the current turn player
+  # @param move [Move] the move we want to make on the chess board
+  def validate_move_turn(move)
+    raise IllegalMoveError, 'Invalid piece' if move.from_piece.nil? || move.from_piece.color != @turn.color
+  end
 
-    raise IllegalMoveError, 'Invalid piece' if piece_to_move.nil? || piece_to_move.color != @turn.color
-    raise IllegalMoveError, 'Cannot put king in check' if will_put_my_king_in_check(from, to)
+  # Validates if the passed +move+ is of a piece of the current turn player
+  # @param move [Move] the move we want to make on the chess board
+  def validate_not_results_in_check_for_own_king(move)
+    raise IllegalMoveError, 'Cannot put king in check' if will_put_my_king_in_check(move)
   end
 
   # Toggles the current player turn to move
@@ -94,10 +99,11 @@ class Chess
       coordinates.flatten.each do |to|
         move = create_move(from, to, board)
         begin
-          validate_move(from, to)
+          validate_move_turn(move)
+          validate_not_results_in_check_for_own_king(move)
           move.validate
           return false
-        rescue IllegalMoveError
+        rescue IllegalMoveError, InvalidCoordinateError
           checkmate = true
         end
       end
@@ -123,10 +129,11 @@ class Chess
       coordinates.flatten.each do |to|
         move = create_move(from, to, board)
         begin
-          validate_move(from, to)
+          validate_move_turn(move)
+          validate_not_results_in_check_for_own_king(move)
           move.validate
           return false
-        rescue IllegalMoveError
+        rescue IllegalMoveError, InvalidCoordinateError
           stealmate = true
         end
       end
@@ -176,18 +183,30 @@ class Chess
   # @param from [String] the starting square
   # @param to [String] the destination square
   # @return [Boolean] if the moves puts own king in check
-  def will_put_my_king_in_check(from, to)
+  def will_put_my_king_in_check(move)
     board_clone = DeepClone.clone(@board)
+    move.board = board_clone # We need to perform the move in the board clone
 
-    # TODO, check if its a queening move
-    move = create_move(from, to, board_clone)
     begin
       move.validate
       move.execute
+      move.board = @board # Set the original board
       board_clone.in_check?(board_clone, @turn.color)
-    rescue StandardError => e
-      # It's an Illegal move -> cannot be added, so return true for now
+    rescue IllegalMoveError, InvalidCoordinateError
+      # It's an Illegal move -> cannot be added
       true
     end
+  end
+
+  # Detemines if the move has been result in check or checkmate to the
+  # opponent and add the status symbol to the move notation
+  # @param move [Move] the move we want to get the notation
+  def generate_notation(move)
+    switch_turn
+    check = @board.in_check?(@board, @turn.color) ? '+' : ''
+    checkmate = checkmate?(@board, @turn.color) ? '#' : ''
+
+    move.notation = "#{move.long_algebraic_notation}#{checkmate.empty? ? check : checkmate}"
+    switch_turn
   end
 end

@@ -18,7 +18,7 @@
 - [x] Insuficient material rule(draw)
 - [x] Fix long/short castle to check the whole blocked path
 - [ ] Fix remaining TODOs
-- [ ] Fix the moves list when exceeds the curses window height
+- [x] Fix the moves list when exceeds the curses window height
 - [ ] UI when game ends
-- [ ] Improve algebraic notation
+- [x] Improve algebraic notation
 - [ ] Improve tests with stubs/mocks

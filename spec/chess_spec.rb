@@ -25,7 +25,7 @@ RSpec.describe Chess do
       it 'it adds the move to the game' do
         board.add_piece(white_pawn, 'a2')
         allow(white_pawn).to receive(:can_move_to?).with(any_args).and_return(true)
-        allow(white_player).to receive(:color).exactly(3).times.and_return('white')
+        allow(white_player).to receive(:color).exactly(4).times.and_return('white')
         allow(black_player).to receive(:color).and_return('black')
         allow(white_pawn).to receive(:fen_representation).and_return('P')
         chess.add_move(move)

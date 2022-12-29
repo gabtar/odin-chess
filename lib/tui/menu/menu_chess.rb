@@ -22,10 +22,6 @@ class MenuChess
 
   # Displays the menu options inside the curses window
   def render
-    # TODO, slice @options array to a number of options that fits in
-    # the actual window height
-    # TODO, append nil to @options.slice to avoid highlighted border effects?
-    # @window.clear it isnt working well
     window_height = @window.maxy
     start = 0
     start = window_height - 2 if @active_index >= window_height - 2
@@ -33,15 +29,16 @@ class MenuChess
     @window.box('|', '-')
 
     @options.slice(start, window_height - 2).each_with_index do |element, index|
-      name_length = element.name.length
-      # Todo check if savegame name exceeds the window length
+      name = element.name
+      name = "#{name[0..@window.maxx - 8]}..." if element.name.length >= @window.maxx
+      name_length = name.length
       surround_spaces = ' ' * ((@window.maxx - name_length - 2) / 2)
       aditional_space = name_length.odd? ? ' ' : ''
       @window.setpos(index + 1, 1)
       # Highlight selected option
       # @window.attrset(index == @active_index - start ? A_STANDOUT : A_NORMAL)
       @window.attrset(index == @active_index - start ? A_STANDOUT : A_NORMAL)
-      @window.addstr("#{surround_spaces}#{element.name}#{surround_spaces}#{aditional_space}")
+      @window.addstr("#{surround_spaces}#{name}#{surround_spaces}#{aditional_space}")
     end
 
     @window.standend

@@ -16,7 +16,6 @@ class ComputerPlayer < Player
 
   # Returns a random move
   def play_move
-    # TODO: check if its stealmate or something?
     loop do
       from = random_rank + random_file
       to = random_rank + random_file

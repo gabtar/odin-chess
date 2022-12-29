@@ -33,9 +33,9 @@ class GameTUI
                   ⠀⠀⠀⠀⠀⠀⠀⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠀⠀⠀⠀⠀⠀⠀
                   ⠀⠀⠀⠀⠀⠀⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⠀⠀⠀⠀⠀⠀
                   ⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀
-     _____      _               ___    _                        
-    (  _  )    ( ) _           (  _`\ ( )                       
-    | ( ) |   _| |(_)  ___     | ( (_)| |__     __    ___   ___ 
+     _____      _               ___    _
+    (  _  )    ( ) _           (  _`\ ( )
+    | ( ) |   _| |(_)  ___     | ( (_)| |__     __    ___   ___
     | | | | /'_` || |/' _ `\   | |  _ |  _ `\ /'__`\/',__)/',__)
     | (_) |( (_| || || ( ) |   | (_( )| | | |(  ___/\__, \\__, \
     (_____)`\__,_)(_)(_) (_)   (____/'(_) (_)`\____)(____/(____/
@@ -80,7 +80,7 @@ class GameTUI
 
       # Render initial screen
       draw_multiline_string('Welcome to odin chess', board)
-      draw_multiline_string(moves_status(@game.current_game), moves, false)
+      draw_multiline_string(moves_status(@game.current_game, moves.maxy - 4), moves, false)
 
       # Build the menu
       menu_class = MenuChess.new(menu)
@@ -120,15 +120,12 @@ class GameTUI
           menu_class.next
         when 13
           menu_class.execute
-        when 'x'
-          # TODO: only for testing
-          Curses.close_screen
-          exit!
         end
         menu_class.render
 
+        # TODO, render only if status has changed
         draw_multiline_string(board_status(@game.current_game), board)
-        draw_multiline_string(moves_status(@game.current_game), moves, false)
+        draw_multiline_string(moves_status(@game.current_game, moves.maxy - 4), moves, false)
 
       end
     ensure
