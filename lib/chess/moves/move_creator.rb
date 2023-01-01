@@ -94,6 +94,9 @@ module MoveCreator
   # @attr to [String] the ending position square
   # @attr board [Board] the board with the position before the move
   def en_passant?(from, to, board)
+    from_piece = board.get_piece_at(from)
+    return false if from_piece.nil? || !from_piece.is_a?(Pawn)
+
     en_passant_distance = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
     distance = board.calculate_distance_vector(from, to)
     last_move_validation = board.last_move.is_a?(FirstPawnMove)

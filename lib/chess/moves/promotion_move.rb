@@ -42,6 +42,6 @@ class PromotionMove < Move
   # Outputs move in long algebraic notation
   # @return [String] the move in long algebraic notation
   def long_algebraic_notation
-    "#{@from_piece}#{@from}#{@to}#{@promoted_to}"
+    "#{@from}#{@to}=#{@promoted_to}"
   end
 end

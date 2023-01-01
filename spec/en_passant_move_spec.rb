@@ -11,7 +11,6 @@ RSpec.describe EnPassantMove do
 
     context 'when capturing en passant from e4 to d3 as black' do
       it 'moves the black pawn from e4 to d3 and removes the white pawn at d4' do
-        # TODO, mocks
         last_move_board.add_piece(white_pawn, 'd2')
         allow(white_pawn).to receive(:color).and_return('white')
         allow(white_pawn).to receive(:fen_representation).and_return('P')
@@ -71,12 +70,12 @@ RSpec.describe EnPassantMove do
     let(:white_pawn) { instance_double('Pawn') }
     let(:black_pawn) { instance_double('Pawn') }
     context 'when moving from e4 to d3' do
-      it 'returns e2e4' do
+      it 'returns e2xd3e.p.' do
         allow(white_pawn).to receive(:fen_representation).and_return('P')
         allow(black_pawn).to receive(:fen_representation).and_return('p')
         board.add_piece(black_pawn, 'e4')
         move = EnPassantMove.new('e4', 'd3', board)
-        expect(move.long_algebraic_notation).to eq("#{black_pawn}e4xd3e.p.")
+        expect(move.long_algebraic_notation).to eq('e4xd3e.p.')
       end
     end
   end

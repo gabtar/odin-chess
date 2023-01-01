@@ -12,7 +12,7 @@ class CastleMove < Move
 
   def validate
     raise IllegalMoveError, 'King or Rook already moved' if @from_piece.moved || @rook.nil? || @rook.moved
-    raise IllegalMoveError, 'Illegal move' if @board.in_check?(@board, @from_piece.color)
+    raise IllegalMoveError, 'Illegal move' if @board.in_check?(@from_piece.color)
     raise IllegalMoveError, 'Invalid castle' if @board.path_attacked?(@from, @to, @from_piece.color)
     raise IllegalMoveError, 'Path blocked' if @board.blocked_path?(@from, @rook_square)
   end

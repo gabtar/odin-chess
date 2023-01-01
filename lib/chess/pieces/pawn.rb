@@ -7,7 +7,7 @@ require_relative './piece'
 # @attr [String] color piece color(eg. black or white)
 class Pawn < Piece
   def initialize(color)
-    symbol = color == 'white' ? '♙' : '♟'
+    symbol = color == 'white' ? '♟' : '♙'
     fen_representation = color == 'white' ? 'P' : 'p'
     super(color, symbol, fen_representation)
     # default move = +1 rank, same file

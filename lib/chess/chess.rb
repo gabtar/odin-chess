@@ -30,6 +30,7 @@ class Chess
   include MoveCreator
 
   attr_reader :moves_list, :turn, :board, :white_player, :black_player
+  attr_accessor :result
 
   def initialize(board, white_player, black_player)
     @board = board
@@ -37,6 +38,7 @@ class Chess
     @white_player = white_player
     @black_player = black_player
     @turn = @white_player
+    @result = nil
   end
 
   # Adds a valid move to the current game and updates the game status
@@ -85,7 +87,7 @@ class Chess
   # (in check and with no legal moves)
   # @return [Boolean]
   def checkmate?(board, army)
-    return false unless board.in_check?(board, army)
+    return false unless board.in_check?(army)
 
     checkmate = false
     coordinates = []
@@ -115,7 +117,7 @@ class Chess
   # Checks if the passed +army+ on the passed +board+ is in stealmate(no legal moves)
   # @return [Boolean]
   def stealmate?(board, army)
-    return false if board.in_check?(board, army)
+    return false if board.in_check?(army)
 
     stealmate = true
     coordinates = []
@@ -191,7 +193,7 @@ class Chess
       move.validate
       move.execute
       move.board = @board # Set the original board
-      board_clone.in_check?(board_clone, @turn.color)
+      board_clone.in_check?(@turn.color)
     rescue IllegalMoveError, InvalidCoordinateError
       # It's an Illegal move -> cannot be added
       true
@@ -203,10 +205,12 @@ class Chess
   # @param move [Move] the move we want to get the notation
   def generate_notation(move)
     switch_turn
-    check = @board.in_check?(@board, @turn.color) ? '+' : ''
+    @board.to_move = @turn.color
+    check = @board.in_check?(@turn.color) ? '+' : ''
     checkmate = checkmate?(@board, @turn.color) ? '#' : ''
 
     move.notation = "#{move.long_algebraic_notation}#{checkmate.empty? ? check : checkmate}"
     switch_turn
+    @board.to_move = @turn.color
   end
 end

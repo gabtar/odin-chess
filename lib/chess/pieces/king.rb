@@ -10,7 +10,7 @@ class King < Piece
   attr_accessor :moved
 
   def initialize(color)
-    symbol = color == 'white' ? '♔' : '♚'
+    symbol = color == 'white' ? '♚' : '♔'
     fen_representation = color == 'white' ? 'K' : 'k'
     super(color, symbol, fen_representation)
     # default move = horizontal + vertical + diagonals

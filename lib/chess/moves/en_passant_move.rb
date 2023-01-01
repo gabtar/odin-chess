@@ -19,7 +19,7 @@ class EnPassantMove < Move
   # Outputs move in long algebraic notation
   # @return [String] the move in long algebraic notation
   def long_algebraic_notation
-    "#{@from_piece}#{@from}x#{@to}e.p."
+    "#{@from}x#{@to}e.p."
   end
 
   private

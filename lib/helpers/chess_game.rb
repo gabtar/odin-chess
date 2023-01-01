@@ -2,19 +2,19 @@
 
 # Wrapper for the chess object for handling games in the TUI
 class ChessGame
-  attr_reader :winner, :current_game
+  attr_reader :result, :current_game
 
   include GameConfigurator
 
   def initialize
-    @current_game = create_new_game
-    @winner = nil
+    @current_game = nil
+    @result = nil
   end
 
   # Creates a new chess game between 2 players
   # @attr play_vs_computer [Boolean] allows 1 ramdom player to be a computer player
   def new_game(play_vs_computer)
-    @winner = nil
+    @result = nil
     @current_game = create_new_game(computer_player: play_vs_computer)
   end
 
@@ -30,10 +30,7 @@ class ChessGame
     opponent = @current_game.turn.color == 'white' ? 'black' : 'white'
     @current_game.add_move(move)
 
-    @winner = opponent if @current_game.checkmate?(@current_game.board, opponent)
-    @winner = 'Draw' if @current_game.stealmate?(@current_game.board, opponent)
-    @winner = 'Draw by repetition' if @current_game.threefold_repetition?
-    @winner = 'Draw by insuficient material' if @current_game.insuficient_material?(@current_game.board)
+    check_result(opponent)
   end
 
   # Serializes the current game instance into a yaml string
@@ -43,6 +40,19 @@ class ChessGame
 
   # Returns if the game has ended
   def finished?
-    !@winner.nil?
+    !@result.nil?
+  end
+
+  private
+
+  def check_result(opponent)
+    # Store in a result parameter
+    winner = opponent == 'white' ? '0 - 1' : '1 - 0'
+    @result = winner if @current_game.checkmate?(@current_game.board, opponent)
+    @result = '½ - ½ by stealmate' if @current_game.stealmate?(@current_game.board, opponent)
+    @result = '½ - ½ by repetition' if @current_game.threefold_repetition?
+    @result = '½ - ½ by insuficient material' if @current_game.insuficient_material?(@current_game.board)
+
+    @current_game.result = @result
   end
 end

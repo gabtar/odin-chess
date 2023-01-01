@@ -7,7 +7,7 @@ require_relative './piece'
 # @attr [String] color piece color(eg. black or white)
 class Knight < Piece
   def initialize(color)
-    symbol = color == 'white' ? '♘' : '♞'
+    symbol = color == 'white' ? '♞' : '♘'
     fen_representation = color == 'white' ? 'N' : 'n'
     super(color, symbol, fen_representation)
     # default move = jumps in L shape move

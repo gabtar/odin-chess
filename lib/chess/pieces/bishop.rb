@@ -10,7 +10,7 @@ class Bishop < Piece
   include BasicDirectionalMove
 
   def initialize(color)
-    symbol = color == 'white' ? '♗' : '♝'
+    symbol = color == 'white' ? '♝' : '♗'
     fen_representation = color == 'white' ? 'B' : 'b'
     super(color, symbol, fen_representation)
     # default move = diagonals

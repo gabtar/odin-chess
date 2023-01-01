@@ -25,7 +25,7 @@ RSpec.describe Chess do
       it 'it adds the move to the game' do
         board.add_piece(white_pawn, 'a2')
         allow(white_pawn).to receive(:can_move_to?).with(any_args).and_return(true)
-        allow(white_player).to receive(:color).exactly(4).times.and_return('white')
+        allow(white_player).to receive(:color).exactly(5).times.and_return('white')
         allow(black_player).to receive(:color).and_return('black')
         allow(white_pawn).to receive(:fen_representation).and_return('P')
         chess.add_move(move)
@@ -325,6 +325,7 @@ RSpec.describe Chess do
         allow(board).to receive(:get_piece_at).with('d5').and_return(pawn)
         allow(board).to receive(:last_move).and_return(first_pawn_move)
         allow(first_pawn_move).to receive(:is_a?).and_return(FirstPawnMove)
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
         allow(pawn).to receive(:color).and_return('white')
         allow(board).to receive(:calculate_distance_vector).with('d5', 'e6').and_return([1, 1])
         expect(chess.en_passant?('d5', 'e6', board)).to be_truthy
@@ -334,6 +335,7 @@ RSpec.describe Chess do
     context 'when its not an en passant pawn move' do
       it 'returns false' do
         allow(board).to receive(:get_piece_at).with('d3').and_return(pawn)
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
         allow(pawn).to receive(:color).and_return('black')
         allow(board).to receive(:last_move).and_return(not_first_pawn_move)
         allow(board).to receive(:calculate_distance_vector).with('d3', 'e2').and_return([1, -1])
@@ -345,6 +347,7 @@ RSpec.describe Chess do
       it 'returns true' do
         allow(board).to receive(:get_piece_at).with('d4').and_return(pawn)
         allow(pawn).to receive(:color).and_return('black')
+        allow(pawn).to receive(:is_a?).and_return(Pawn)
         allow(board).to receive(:last_move).and_return(first_pawn_move)
         allow(first_pawn_move).to receive(:is_a?).and_return(FirstPawnMove)
         allow(board).to receive(:calculate_distance_vector).with('d4', 'e3').and_return([1, -1])

@@ -10,9 +10,10 @@ class EnterMoveCommand
 
   attr_reader :name
 
-  def initialize(game, window)
+  def initialize(game, window, global_menu)
     @game = game
     @name = 'Enter move'
+    @global_menu = global_menu
     @window = window
   end
 
@@ -41,12 +42,12 @@ class EnterMoveCommand
 
       @game.add_move(move)
 
-      # TODO, improve final message change menu?
       if @game.finished?
-        display_message(" Game finished, #{@game.winner} won ")
+        display_message(" Game finished, #{@game.result} ")
         @window.refresh
-        sleep(3)
-        # EXECUTE BACK COMMAND?
+        sleep(1)
+        # Execute back command
+        @global_menu.options[3].execute
         return
       end
 

@@ -10,7 +10,7 @@ class Queen < Piece
   include BasicDirectionalMove
 
   def initialize(color)
-    symbol = color == 'white' ? '♕' : '♛'
+    symbol = color == 'white' ? '♛' : '♕'
     fen_representation = color == 'white' ? 'Q' : 'q'
     super(color, symbol, fen_representation)
     # default move = horizontal + vertical + diagonals

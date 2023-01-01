@@ -21,8 +21,6 @@ class SaveCommand
     display_message('Game saved!')
     @window.refresh
     sleep(1)
-
-    # TODO: switch menu again
   end
 
   # Gets input from user

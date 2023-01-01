@@ -12,7 +12,7 @@ class Rook < Piece
   include BasicDirectionalMove
 
   def initialize(color)
-    symbol = color == 'white' ? '♖' : '♜'
+    symbol = color == 'white' ? '♜' : '♖'
     fen_representation = color == 'white' ? 'R' : 'r'
     super(color, symbol, fen_representation)
     # default move = horizontal + vertical

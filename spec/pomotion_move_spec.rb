@@ -24,12 +24,12 @@ RSpec.describe PromotionMove do
     let(:pawn) { instance_double('Pawn') }
 
     context 'when queening from d2 to d1' do
-      it 'returns d2d1Q' do
+      it 'returns d2d1=♛' do
         board.add_piece(pawn, 'd2')
         allow(pawn).to receive(:color).and_return('black')
         allow(pawn).to receive(:fen_representation).and_return('P')
         move = PromotionMove.new('d2', 'd1', board, Queen.new('black'))
-        expect(move.long_algebraic_notation).to eq("#{pawn}d2d1♛")
+        expect(move.long_algebraic_notation).to eq('d2d1=♕')
       end
     end
   end

@@ -195,7 +195,7 @@ RSpec.describe Board do
       it 'returns false' do
         board.add_piece(black_king, 'e8')
         board.add_piece(white_pawn, 'a8')
-        expect(board.in_check?(board, 'black')).to be_falsy
+        expect(board.in_check?('black')).to be_falsy
       end
     end
 
@@ -203,7 +203,7 @@ RSpec.describe Board do
       it 'returns true' do
         board.add_piece(black_king, 'e8')
         board.add_piece(white_pawn, 'f7')
-        expect(board.in_check?(board, 'black')).to be_truthy
+        expect(board.in_check?('black')).to be_truthy
       end
     end
   end

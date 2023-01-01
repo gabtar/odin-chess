@@ -1,24 +1,16 @@
-# Chess Game - WIP
+# Odin Chess
 
-- [x] Add FirstPawn move support
-- [x] En passant move support
-- [x] Refactors for validations in pieces(no longer needed now)
-- [x] Pawn Capture Move
-- [x] Fix castle
-- [x] Check finals move validations for some corner cases
-- [x] Fix that king can castle when in check
-- [x] Fix that pawn normal forward moves, cannot capture
-- [x] Add a simple ramdom computer AI?
-- [x] 2 Players game or vs AI
-- [x] End the game when checkmate opponent
-- [x] Fixes in curses UI / scrolling support?
-- [x] Reset winner when creating new game in NewGameCommand
-- [x] Support for Stealmate(draw)
-- [x] Threefold repetition rule(draw)
-- [x] Insuficient material rule(draw)
-- [x] Fix long/short castle to check the whole blocked path
-- [ ] Fix remaining TODOs
-- [x] Fix the moves list when exceeds the curses window height
-- [ ] UI when game ends
-- [x] Improve algebraic notation
-- [ ] Improve tests with stubs/mocks
+A simple console chess game written in ruby with a curses terminal interface.
+
+## Setup
+
+Dependencies: Ruby > 2.7 and RubyGems installed.
+
+```
+git clone https://github.com/gabtar/odin-chess.git
+cd odin-chess
+bundle install
+ruby lib/odin_chess.rb
+```
+
+Play on replit: [Here](https://replit.com/@gabtar/odin-chess)

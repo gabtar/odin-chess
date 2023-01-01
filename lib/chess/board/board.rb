@@ -92,12 +92,11 @@ class Board
   # Validates if the passed colour if current player is in check or not in the current position
   # @param army [String] the colour of the side we want to know if it's in check
   # @return [Boolean] true if its in check otherwise false
-  def in_check?(_board, army)
+  def in_check?(army)
     board_clone = DeepClone.clone(self)
     opponent_pieces = board_clone.pieces(army == 'white' ? 'black' : 'white')
     king = board_clone.pieces(army).select { |piece| piece.is_a?(King) }.first
 
-    # Refactor with pieces method
     opponent_pieces.each do |piece|
       from = board_clone.get_coordinate(piece)
 
@@ -106,7 +105,7 @@ class Board
         # Found a move that can capture the king
         move.validate
         return true
-      rescue StandardError => e
+      rescue IllegalMoveError, InvalidCoordinateError
         # Its an invalid move, so as it cannot be performed, is not in check
         # Continue looking for captures moves
         next

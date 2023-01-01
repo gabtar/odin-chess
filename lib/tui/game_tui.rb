@@ -46,10 +46,22 @@ class GameTUI
 
   WELCOME_SCREEN
 
+  START_SCREEN = <<~'START_SCREEN'
+     _____      _               ___    _
+    (  _  )    ( ) _           (  _`\ ( )
+    | ( ) |   _| |(_)  ___     | ( (_)| |__     __    ___   ___
+    | | | | /'_` || |/' _ `\   | |  _ |  _ `\ /'__`\/',__)/',__)
+    | (_) |( (_| || || ( ) |   | (_( )| | | |(  ___/\__, \\__, \
+    (_____)`\__,_)(_)(_) (_)   (____/'(_) (_)`\____)(____/(____/
+
+    Select an option in the menu to start a new game or load a saved one.
+  START_SCREEN
+
   def initialize
     @game = ChessGame.new
   end
 
+  # Starts the main game interface
   def start
     init_screen
     begin
@@ -79,14 +91,14 @@ class GameTUI
       moves.box('|', '-')
 
       # Render initial screen
-      draw_multiline_string('Welcome to odin chess', board)
-      draw_multiline_string(moves_status(@game.current_game, moves.maxy - 4), moves, false)
+      draw_multiline_string(START_SCREEN, board)
+      draw_multiline_string(moves_status([], moves.maxy - 4), moves, false)
 
       # Build the menu
       menu_class = MenuChess.new(menu)
 
       ingame_menu_options = [
-        EnterMoveCommand.new(@game, menu),
+        EnterMoveCommand.new(@game, menu, menu_class),
         SaveCommand.new(@game, menu),
         ExitCommand.new
       ]
@@ -123,9 +135,13 @@ class GameTUI
         end
         menu_class.render
 
-        # TODO, render only if status has changed
-        draw_multiline_string(board_status(@game.current_game), board)
-        draw_multiline_string(moves_status(@game.current_game, moves.maxy - 4), moves, false)
+        if @game.current_game.nil?
+          draw_multiline_string(START_SCREEN, board)
+          draw_multiline_string(moves_status([], moves.maxy - 4), moves, false)
+        else
+          draw_multiline_string(board_status(@game.current_game), board)
+          draw_multiline_string(moves_status(@game.current_game.moves_list, moves.maxy - 4), moves, false)
+        end
 
       end
     ensure

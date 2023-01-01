@@ -97,7 +97,7 @@ RSpec.describe FirstPawnMove do
         allow(white_pawn).to receive(:fen_representation).and_return('P')
         board.add_piece(white_pawn, 'e2')
         move = FirstPawnMove.new('e2', 'e4', board)
-        expect(move.long_algebraic_notation).to eq("#{white_pawn}e2e4")
+        expect(move.long_algebraic_notation).to eq('e2e4')
       end
     end
   end
